@@ -1,0 +1,25 @@
+{
+  "name": "Roundist Alpha",
+  "description": "Search rounds easily",
+  "author": "Whitie",
+  "version": "0.4.1",
+  "manifest_version": 3,
+  "icons": {
+    "16": "/images/roundist-16.png",
+    "32": "/images/roundist-32.png",
+    "48": "/images/roundist-48.png",
+    "128": "/images/roundist-128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://*.fundist.org/*"],
+      "css": ["style.css"],
+      "js": ["./options/defaults.js", "index.js", "stalls.js"]
+    }
+  ],
+  "permissions": ["storage"],
+  "action": {
+    "default_popup": "popup/index.html"
+  },
+  "options_page": "options/index.html"
+}

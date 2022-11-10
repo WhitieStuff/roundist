@@ -1,0 +1,30 @@
+:root {
+  --main-bg-color: #f3f3f4;
+  --section-bg-color: #fff;
+  --second-bg-color: #f7f8fb;
+  --main-text-color: #7f7fa0;
+  --title-text-color: #2f2e4d;
+  --link-text-color: var(--color-mint);
+  --link-hover-text-color: var(--color-mint-light);
+  --color-mint: #00b394;
+  --color-mint-light: #1fd8d3;
+  --color-yellow: #fcd702;
+  --color-blue: #1c84c5;
+  --main-font: 'Roboto Condensed', Tahoma, Geneva, Verdana, sans-serif;
+  --main-gradient: linear-gradient(
+    135deg,
+    #fcd702 0%,
+    #fcd702 15%,
+    #1c84c5 85%,
+    #1c84c5 100%
+  );
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  text-decoration: none;
+  color: inherit;
+  list-style: none;
+}
