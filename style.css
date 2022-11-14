@@ -10,7 +10,8 @@
   font-size: 12px;
 }
 
-.fundist-logo__link:hover, .fundist-logo__link:focus {
+.fundist-logo__link:hover,
+.fundist-logo__link:focus {
   color: #fff;
 }
 
@@ -34,7 +35,10 @@
   outline: none;
 }
 
-.nav-buttons__button_copied, .nav-buttons__button_copied:hover, .nav-buttons__button_copied:focus, .nav-buttons__button_copied:active {
+.nav-buttons__button_copied,
+.nav-buttons__button_copied:hover,
+.nav-buttons__button_copied:focus,
+.nav-buttons__button_copied:active {
   background-color: #18a689;
   color: #ddd;
 }
@@ -116,7 +120,6 @@ body div.modal-backdrop {
   /* left: 0; */
   /* transform: translateX(-100%); */
   opacity: 0;
-  
 }
 .roundist__row_deposits [name='col-Note'] .roundist__icons {
   left: 0;
@@ -172,18 +175,34 @@ body div.modal-backdrop {
   /* background-image: url('data:image/png;base64,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'); */
 }
 .roundist__mr-button {
-  display: block;
+  display: flex;
+  align-items: center;
   font-weight: normal;
   background: none;
   border: none;
   outline: none;
   appearance: none;
   padding: 0;
-  color: #00b394;
+  opacity: .7;
+  /* color: #00b394; */
 }
 
-.roundist__mr-button:hover, .roundist__mr-button:focus {
-  color: #01a9b6;
+.roundist__mr-button:hover,
+.roundist__mr-button:focus {
+  /* color: #01a9b6;
+  color: #000; */
+  opacity: 1;
+}
+
+.roundist__mr-button::before {
+  content: '►';
+  padding-right: 2px;
+  font-size: 10px;
+  line-height: 1rem;
+}
+
+.roundist__mr-button_expanded::before {
+  content: '▼';
 }
 
 .roundist__mr-orig {
@@ -202,6 +221,113 @@ body div.modal-backdrop {
 }
 
 .roundist__mr-line {
-  margin-bottom: 4px;
+  margin: 5px 0;
+  font-weight: bold;
+  /* color: #769b8c; */
 }
 
+.roundist__mr-line_error {
+  color: #ed5565;
+}
+
+.roundist__mr-parsed-container {
+}
+
+.roundist__mr-parsed-level {
+  height: 1.5em;
+  overflow: hidden;
+  padding-left: 15px;
+}
+
+.roundist__mr-parsed-level_expanded {
+  height: auto;
+}
+
+.roundist__mr-parsed-value_parent::before {
+  content: '...';
+}
+
+.roundist__mr-parsed-level_expanded>.roundist__mr-parsed-value_parent::before {
+  content: '';
+}
+
+.roundist__mr-parsed-label {
+  display: inline-block;
+  font-weight: bold;
+  /* padding-left: 12px; */
+}
+
+.roundist__mr-parsed-label::after {
+  content: ':';
+}
+
+.roundist__mr-parsed-label_parent {
+  display: inline-flex;
+  align-items: center;
+  padding-left: 0;
+  cursor: pointer;
+  position: relative;
+}
+
+.roundist__mr-parsed-level .roundist__mr-parsed-label {
+  color: #607196;
+}
+
+.roundist__mr-parsed-level .roundist__mr-parsed-level .roundist__mr-parsed-label {
+  color: #654597;
+}
+
+.roundist__mr-parsed-level .roundist__mr-parsed-level .roundist__mr-parsed-level .roundist__mr-parsed-label {
+  color: #769b8c;
+}
+
+.roundist__mr-parsed-level .roundist__mr-parsed-level .roundist__mr-parsed-level .roundist__mr-parsed-level .roundist__mr-parsed-label {
+  color: #607196;
+}
+
+.roundist__mr-parsed-level .roundist__mr-parsed-level .roundist__mr-parsed-level .roundist__mr-parsed-level .roundist__mr-parsed-level .roundist__mr-parsed-label {
+  color: #654597;
+}
+
+.roundist__mr-parsed-level .roundist__mr-parsed-level .roundist__mr-parsed-level .roundist__mr-parsed-level .roundist__mr-parsed-level .roundist__mr-parsed-level .roundist__mr-parsed-label {
+  color: #769b8c;
+}
+
+.roundist__mr-parsed-level .roundist__mr-parsed-level .roundist__mr-parsed-level .roundist__mr-parsed-level .roundist__mr-parsed-level .roundist__mr-parsed-level .roundist__mr-parsed-level .roundist__mr-parsed-label {
+  color: #607196;
+}
+
+.roundist__mr-parsed-level .roundist__mr-parsed-level .roundist__mr-parsed-level .roundist__mr-parsed-level .roundist__mr-parsed-level .roundist__mr-parsed-level .roundist__mr-parsed-level .roundist__mr-parsed-level .roundist__mr-parsed-label {
+  color: #654597;
+}
+
+.roundist__mr-parsed-level .roundist__mr-parsed-level .roundist__mr-parsed-level .roundist__mr-parsed-level .roundist__mr-parsed-level .roundist__mr-parsed-level .roundist__mr-parsed-level .roundist__mr-parsed-level .roundist__mr-parsed-level .roundist__mr-parsed-label {
+  color: #769b8c;
+}
+
+.roundist__mr-parsed-label_parent:hover, .roundist__mr-parsed-label_parent:focus {
+  color: #000;
+}
+
+.roundist__mr-parsed-label_parent-expanded {
+}
+
+.roundist__mr-parsed-label_parent::before {
+  position: absolute;
+  left: 0;
+  transform: translateX(-100%);
+  content: '►';
+  color: #c4c6c7;
+  font-size: 10px;
+  line-height: 1rem;
+  padding-right: 2px;
+}
+
+.roundist__mr-parsed-label_parent-expanded::before {
+  content: '▼';
+}
+
+.roundist__mr-parsed-value {
+  display: inline-block;
+  margin-left: 5px;
+}

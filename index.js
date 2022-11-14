@@ -109,7 +109,7 @@ function modifyMerchantRequests() {
 
     //If JSON, second check for JSONs in URL params
     if (data.match(/.*{.*}$/i) && !data.match(/Callback\/[^{]+=[^{]+{.+}$/i)) {
-      console.log('Looks like JSON')
+      // console.log('Looks like JSON')
       entryFirstPart = data.split('{')[0]
       entryBody = data.replace(entryFirstPart, '')
 
@@ -125,19 +125,25 @@ function modifyMerchantRequests() {
 
         if (leftJSON && rightJSON)
           parsedData = { body: rightJSON, headers: leftJSON }
+
+        //ToDo: try XML in each value for Playson
       }
     }
     //If XML
     else if (data.match(/.*&lt;.*&gt;$/i)) {
-      console.log('Looks like XML')
+      // console.log('Looks like XML')
       entryFirstPart = data.split('&lt;')[0]
       entryBody = data
         .replace(entryFirstPart, '')
         .replace(/&lt;\?xml.+\?&gt;/i, '')
+
+      parsedData = tryXML(
+        entryBody.replaceAll('&lt;', '<').replaceAll('&gt;', '>')
+      )
     }
     //Not JSON or XML
     else {
-      console.log('Looks like something else')
+      // console.log('Looks like something else')
 
       //For SAGaming
       let isSAGaming = data.match(/\/System\/Merchants\/SAGaming.*$/i)
@@ -162,9 +168,14 @@ function modifyMerchantRequests() {
       if (entryBody.match(/=.*&amp;.+=/i)) {
         parsedData = tryParams(entryBody)
       }
+
+      if (data.match(/^[a-zA-Z0-9\s\t]+$/i)) {
+        parsedData = {Message: data}
+        entryFirstPart = ''
+      }
     }
 
-    console.log(parsedData)
+    // console.log(parsedData)
 
     let { entryID, entryFuncore, entryURL, entryExtra } =
       parseFirstPart(entryFirstPart)
@@ -185,7 +196,7 @@ function modifyMerchantRequests() {
 
   function tryJSON(data) {
     let result = {}
-    console.log('Parsing JSON: ', data)
+    // console.log('Parsing JSON: ', data)
     try {
       result = JSON.parse(data)
     } catch {
@@ -211,6 +222,57 @@ function modifyMerchantRequests() {
     } catch {
       result = null
     }
+    return result
+  }
+
+  function tryXML(data) {
+    // console.log('Parsing XML: ', data)
+    let result = {}
+    try {
+      let parser = new DOMParser()
+      let res = parser.parseFromString(data, 'application/xml')
+
+      let children = res.children
+      for (let i = 0; i < children.length; i++) {
+        let element = children[i]
+        let key = element.tagName
+        let value = parseXMLLevel(element)
+
+        result[key] = value
+      }
+    } catch {
+      result = null
+    }
+    return result
+  }
+
+  function parseXMLLevel(element) {
+    let result = {}
+    let attributes = element.getAttributeNames()
+
+    if (attributes.length)
+      attributes.forEach(attribute => {
+        if (element.getAttribute(attribute).trim().length)
+          result[attribute] = element.getAttribute(attribute)
+      })
+
+    let children = element.children
+    if (children.length) {
+      for (let i = 0; i < children.length; i++) {
+        let element = children[i]
+        let key = element.tagName
+        let value = parseXMLLevel(element)
+        result[key] = value
+      }
+    } else {
+      // If there are no other keys, returns 'Key: Value' instead of 'Key: {Key: Value}'
+      if (Object.keys(result).length) {
+        if (element.innerHTML.trim().length) result[element.tagName] = element.innerHTML
+      } else {
+        result = element.innerHTML.trim() || '-'
+      }
+    }
+
     return result
   }
 
@@ -255,6 +317,7 @@ function modifyMerchantRequests() {
     origButton.id = origID.replace('orig', 'button')
     origButton.innerHTML = 'Show original'
     origButton.addEventListener('click', e => {
+      origButton.classList.toggle('roundist__mr-button_expanded')
       origValue.classList.toggle('roundist__mr-orig_expanded')
       origButton.innerHTML =
         origButton.innerHTML == 'Show original'
@@ -268,15 +331,27 @@ function modifyMerchantRequests() {
     entry.appendChild(origValue)
 
     for (key in entryParts) {
-      if (key == 'parsedData' || key == 'entryFuncore' || key == 'entryID')
+      if (key == 'entryFuncore' || key == 'entryID' || key == 'entryBody')
         continue
 
       let line = document.createElement('div')
       line.classList.add('roundist__mr-line')
       line.innerHTML = entryParts[key]
 
+      if (key == 'parsedData') {
+        if (entryParts.parsedData) {
+          // line.innerHTML = JSON.stringify(entryParts.parsedData)
+          continue
+        } else {
+          line.classList.add('roundist__mr-line_error')
+          line.innerHTML = "Couldn't parse data, see the original transaction."
+        }
+      }
+
       entry.appendChild(line)
     }
+
+    if (entryParts.parsedData) displayParsedData(entry, entryParts.parsedData)
   }
 
   function displayHeaderButton(header) {
@@ -296,16 +371,79 @@ function modifyMerchantRequests() {
         orig.classList.remove('roundist__mr-orig_expanded')
       })
       buttons.forEach(button => {
-        if (hidden) return (button.innerHTML = 'Hide original')
-        button.innerHTML = 'Show original'
+        if (hidden) {
+          button.innerHTML = 'Hide original'
+          button.classList.add('roundist__mr-button_expanded')
+        } else {
+          button.innerHTML = 'Show original'
+          button.classList.remove('roundist__mr-button_expanded')
+        }
       })
 
-      if (hidden)
-        return (headerButton.innerHTML = 'Hide all original transactions')
-      headerButton.innerHTML = 'Show all original transactions'
+      if (hidden) {
+        headerButton.innerHTML = 'Hide all original transactions'
+        headerButton.classList.add('roundist__mr-button_expanded')
+      } else {
+        headerButton.innerHTML = 'Show all original transactions'
+        headerButton.classList.remove('roundist__mr-button_expanded')
+      }
     })
 
     header.appendChild(headerButton)
+  }
+
+  function displayParsedData(entry, data) {
+    let dataContainer = displayParsedObject(data)
+    entry.appendChild(dataContainer)
+  }
+
+  function displayParsedObject(data) {
+    let dataContainer = document.createElement('div')
+    dataContainer.classList.add('roundist__mr-parsed-container')
+    dataContainer.classList.add('roundist__mr-parsed-container_expanded')
+
+    for (key in data) {
+      let value = data[key]
+      if (value === null) value = 'null'
+      let hasChildren =
+        (value.constructor === Object && Object.keys(value).length) ||
+        (Array.isArray(value) && value.length)
+          ? true
+          : false
+
+      let keyLevel = document.createElement('div')
+      keyLevel.classList.add('roundist__mr-parsed-level')
+      keyLevel.classList.add('roundist__mr-parsed-level_expanded')
+
+      let keyLabel = document.createElement('div')
+      keyLabel.innerHTML = key
+      keyLabel.classList.add('roundist__mr-parsed-label')
+
+      let keyData = document.createElement('div')
+      keyData.classList.add('roundist__mr-parsed-value')
+      keyData.innerHTML = hasChildren ? '' : value.toString() || '-'
+
+      keyLevel.appendChild(keyLabel)
+      keyLevel.appendChild(keyData)
+
+      if (hasChildren) {
+        keyData.classList.add('roundist__mr-parsed-value_parent')
+
+        keyLabel.classList.add('roundist__mr-parsed-label_parent')
+        keyLabel.classList.add('roundist__mr-parsed-label_parent-expanded')
+        keyLabel.addEventListener('click', e => {
+          keyLevel.classList.toggle('roundist__mr-parsed-level_expanded')
+          keyLabel.classList.toggle('roundist__mr-parsed-label_parent-expanded')
+        })
+
+        let keyChild = displayParsedObject(value)
+        keyLevel.appendChild(keyChild)
+      }
+
+      dataContainer.appendChild(keyLevel)
+    }
+
+    return dataContainer
   }
 }
 
