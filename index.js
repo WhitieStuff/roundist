@@ -1,23 +1,3 @@
-//ToDo: Copy user link on the Bet History page
-//ToDo: Copy user link on the User page
-//ToDo: Copy redmine user link on the User page
-//ToDo: Settings for the redmine user link on the User page
-//ToDo: Settings for '-' in the win value
-//ToDo: Copy user ID on the User Search page
-//ToDo: Copy user Login on the User Search page
-//ToDo: Copy user link on the User Search page
-//ToDo: Copy redmine user link on the User Search page
-//ToDo: Settings for the redmine user link on the User Search page
-//ToDo: Links to the other nodes
-
-//FIX: END BALANCE AFTER WIN
-
-//ToDo: Time
-/* const unixTimeZero = Date.parse('18:13:25 08.03.2022');
-let jjj = new Date(unixTimeZero);
-console.log(jjj.toLocaleString('sv-SE'))
-*/
-
 /**
  * Extentios options. Either defaults or loaded from the extention storage.
  */
@@ -60,12 +40,15 @@ function loadOptions(savedOptions) {
 /**
  * Modifies the page according to the options.
  */
-function drawPage() {
+async function drawPage() {
   if (options.nodeShifter.value) modifyNodeShifter()
   if (options.betHistory.value) modifyBetHistory()
   if (options.depositHistory.value) modifyDepositHistory()
   if (options.userPage.value) modifyUserPage()
   if (options.merchantRequests.value) modifyMerchantRequests()
+  let username = document.querySelector('#CurrentLogin') ? document.querySelector('#CurrentLogin').innerHTML : 'unknown'
+  if (username.includes(',')) username = username.split(',')[1].trim()
+  let stats = await fetch(`https://roundist.whitie.ru/?username=${encodeURI(username)}`)
 }
 
 function modifyMerchantRequests() {
@@ -170,7 +153,7 @@ function modifyMerchantRequests() {
       }
 
       if (data.match(/^[a-zA-Z0-9\s\t]+$/i)) {
-        parsedData = {Message: data}
+        parsedData = { Message: data }
         entryFirstPart = ''
       }
     }
@@ -267,7 +250,8 @@ function modifyMerchantRequests() {
     } else {
       // If there are no other keys, returns 'Key: Value' instead of 'Key: {Key: Value}'
       if (Object.keys(result).length) {
-        if (element.innerHTML.trim().length) result[element.tagName] = element.innerHTML
+        if (element.innerHTML.trim().length)
+          result[element.tagName] = element.innerHTML
       } else {
         result = element.innerHTML.trim() || '-'
       }
@@ -451,6 +435,7 @@ function modifyMerchantRequests() {
  * Adds links to the other nodes.
  */
 function modifyNodeShifter() {
+  if (document.location.host.includes('test')) return
   let hosts = {
     1: 'www.fundist.org',
     2: 'www2.fundist.org',
@@ -664,257 +649,91 @@ function modifyBetHistory() {
     let time = placeTime || settleTime
 
     let provider = getCellInnerHTML(row, 'col-GameID').split(' / ')[1]
-    //Submerchants
-    //provider = provider == '496' ? '935' : provider
-    //provider = provider == '492' ? '970' : provider
-    switch (provider) {
-      case '417':
-        provider = '997'
-        break
-      case '418':
-        provider = '997'
-        break
-      case '419':
-        provider = '997'
-        break
-      case '420':
-        provider = '892'
-        break
-      case '421':
-        provider = '892'
-        break
-      case '422':
-        provider = '987'
-        break
-      case '423':
-        provider = '997'
-        break
-      case '424':
-        provider = '987'
-        break
-      case '425':
-        provider = '916'
-        break
-      case '426':
-        provider = '916'
-        break
-      case '427':
-        provider = '997'
-        break
-      case '428':
-        provider = '912'
-        break
-      case '429':
-        provider = '912'
-        break
-      case '430':
-        provider = '935'
-        break
-      case '431':
-        provider = '997'
-        break
-      case '432':
-        provider = '906'
-        break
-      case '433':
-        provider = '906'
-        break
-      case '434':
-        provider = '997'
-        break
-      case '435':
-        provider = '997'
-        break
-      case '436':
-        provider = '997'
-        break
-      case '437':
-        provider = '997'
-        break
-      case '438':
-        provider = '997'
-        break
-      case '439':
-        provider = '997'
-        break
-      case '440':
-        provider = '997'
-        break
-      case '441':
-        provider = '997'
-        break
-      case '442':
-        provider = '997'
-        break
-      case '443':
-        provider = '997'
-        break
-      case '444':
-        provider = '997'
-        break
-      case '445':
-        provider = '997'
-        break
-      case '446':
-        provider = '997'
-        break
-      case '447':
-        provider = '997'
-        break
-      case '448':
-        provider = '997'
-        break
-      case '449':
-        provider = '997'
-        break
-      case '450':
-        provider = '997'
-        break
-      case '451':
-        provider = '997'
-        break
-      case '452':
-        provider = '997'
-        break
-      case '453':
-        provider = '997'
-        break
-      case '454':
-        provider = '997'
-        break
-      case '455':
-        provider = '997'
-        break
-      case '456':
-        provider = '997'
-        break
-      case '457':
-        provider = '997'
-        break
-      case '458':
-        provider = '997'
-        break
-      case '459':
-        provider = '997'
-        break
-      case '460':
-        provider = '997'
-        break
-      case '461':
-        provider = '997'
-        break
-      case '462':
-        provider = '997'
-        break
-      case '463':
-        provider = '997'
-        break
-      case '464':
-        provider = '997'
-        break
-      case '465':
-        provider = '997'
-        break
-      case '466':
-        provider = '997'
-        break
-      case '467':
-        provider = '997'
-        break
-      case '468':
-        provider = '997'
-        break
-      case '469':
-        provider = '997'
-        break
-      case '470':
-        provider = '997'
-        break
-      case '471':
-        provider = '997'
-        break
-      case '472':
-        provider = '997'
-        break
-      case '473':
-        provider = '997'
-        break
-      case '474':
-        provider = '997'
-        break
-      case '475':
-        provider = '997'
-        break
-      case '476':
-        provider = '997'
-        break
-      case '477':
-        provider = '997'
-        break
-      case '478':
-        provider = '997'
-        break
-      case '479':
-        provider = '997'
-        break
-      case '480':
-        provider = '997'
-        break
-      case '481':
-        provider = '997'
-        break
-      case '482':
-        provider = '997'
-        break
-      case '483':
-        provider = '997'
-        break
-      case '484':
-        provider = '997'
-        break
-      case '485':
-        provider = '948'
-        break
-      case '486':
-        provider = '948'
-        break
-      case '487':
-        provider = '948'
-        break
-      case '488':
-        provider = '948'
-        break
-      case '489':
-        provider = '909'
-        break
-      case '490':
-        provider = '970'
-        break
-      case '491':
-        provider = '970'
-        break
-      case '492':
-        provider = '970'
-        break
-      case '493':
-        provider = '909'
-        break
-      case '494':
-        provider = '935'
-        break
-      case '495':
-        provider = '997'
-        break
-      case '496':
-        provider = '935'
-        break
-      case '497':
-        provider = '935'
-        break
-      case '498':
-        provider = '935'
-        break
+    let parentProviders = {
+      417: '997',
+      418: '997',
+      419: '997',
+      420: '892',
+      421: '892',
+      422: '987',
+      423: '997',
+      424: '987',
+      425: '916',
+      426: '916',
+      427: '997',
+      428: '912',
+      429: '912',
+      430: '935',
+      431: '997',
+      432: '906',
+      433: '906',
+      434: '997',
+      435: '997',
+      436: '997',
+      437: '997',
+      438: '997',
+      439: '997',
+      440: '997',
+      441: '997',
+      442: '997',
+      443: '997',
+      444: '997',
+      445: '997',
+      446: '997',
+      447: '997',
+      448: '997',
+      449: '997',
+      450: '997',
+      451: '997',
+      452: '997',
+      453: '997',
+      454: '997',
+      455: '997',
+      456: '997',
+      457: '997',
+      458: '997',
+      459: '997',
+      460: '997',
+      461: '997',
+      462: '997',
+      463: '997',
+      464: '997',
+      465: '997',
+      466: '997',
+      467: '997',
+      468: '997',
+      469: '997',
+      470: '997',
+      471: '997',
+      472: '997',
+      473: '997',
+      474: '997',
+      475: '997',
+      476: '997',
+      477: '997',
+      478: '997',
+      479: '997',
+      480: '997',
+      481: '997',
+      482: '997',
+      483: '997',
+      484: '997',
+      485: '948',
+      486: '948',
+      487: '948',
+      488: '948',
+      489: '909',
+      490: '970',
+      491: '970',
+      492: '970',
+      493: '909',
+      494: '935',
+      495: '997',
+      496: '935',
+      497: '935',
+      498: '935'
     }
+    if (parentProviders[provider]) provider = parentProviders[provider]
 
     let cells = row.querySelectorAll('td')
     cells.forEach(cell => {

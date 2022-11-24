@@ -331,3 +331,8 @@ body div.modal-backdrop {
   display: inline-block;
   margin-left: 5px;
 }
+
+.roundist__mr-parsed-value::before {
+  content: "";
+  display: block;
+}
