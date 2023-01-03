@@ -1,172 +1,168 @@
 @import url('../root.css');
 
-.rnd-body {
-  background-color: var(--main-bg-color);
-  background: #fff;
-  color: var(--main-text-color);
-  font-family: var(--main-font);
-  font-size: 14px;
-  font-weight: 300;
-  user-select: none;
+html {
+    background-color: var(--rnd-second-bg-color);
 }
 
-.rnd-title {
-  display: flex;
-  width: 800px;
-  margin: 40px auto;
-  border-radius: 20px;
-  padding: 20px;
-  background: #fff;
-  background: #fafafa;
-  /* background: var(--second-bg-color); */
-  border: 1px solid var(--main-bg-color);
-  font-size: 20px;
-  font-weight: 300;
-  align-items: center;
+.rnd-options__body {
+    margin: auto;
+    width: 800px;
+    user-select: none;
+    padding: 15px 0;
 }
 
-.rnd-title::before {
-  content: "";
-  display: inline-block;
-  width: 26px;
-  height: 26px;
-  margin-right: 6px;
-  background-image: url('../images/roundist-32.png');
-  background-repeat: no-repeat;
-  background-size: contain;
+.rnd-options__header {
+    padding-top: 15px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
 }
 
-.rnd-main {
-  width: 800px;
-  margin: 40px auto;
-  border-radius: 20px;
-  background: var(--second-bg-color);
-  background: #fafafa;
-  border: 1px solid var(--main-bg-color);
-  display: grid;
-  grid-template-columns: 200px 600px;
+.rnd-options__logo {
+    width: 40px;
 }
 
-.rnd-nav {
-  width: 100%;
-  border-radius: 20px 0 0 20px;
-  background: var(--second-bg-color);
-  background: var(--main-bg-color);
-  padding: 20px 0;
+.rnd-options_title {
+    font-weight: normal;
+    font-size: 24px;
+    font-family: Exo;
+    color: var(--rnd-color-blue);
+    opacity: .8;
 }
 
-.rnd-nav__item {
-  list-style: none;
+.rnd-options__section {
+    position: relative;
+    margin-top: 35px;
 }
 
-.rnd-nav__button {
-  width: 100%;
-  border: none;
-  appearance: none;
-  outline: none;
-  background: none;
-  padding: 10px 20px;
-  font-weight: normal;
-  cursor: pointer;
-  text-align: left;
+.rnd-options__section-header-checkbox {
+    position: absolute;
+    display: block;
+    top: 0;
+    width: 0;
+    height: 0;
+    opacity: 0;
 }
 
-.rnd-nav__button_active, .rnd-nav__button:hover, .rnd-nav__button:focus {
-  position: relative;
-  outline: none;
-  color: var(--title-text-color);
-  /* font-weight: 600; */
+.rnd-options__section-header-label {
+    font-size: 20px;
+    font-family: Exo;
+    color: var(--rnd-title-text-color);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
 }
 
-.rnd-nav__button_active::before {
-  position: absolute;
-  left: 0;
-  content: "";
-  display: inline-block;
-  width: 14px;
-  height: 14px;
-  background-image: url('../images/roundist-active-32.png');
-  background-repeat: no-repeat;
-  background-size: contain;
-  opacity: .8;
+.rnd-options__section-header-toggle {
+    position: relative;
+    display: inline-block;
+    height: 20px;
+    width: 30px;
+    border: 1px solid var(--rnd-lighter-text-color);
+    border-radius: 10px;
+    background-color: var(--rnd-main-bg-color);
 }
 
-.rnd-sections {
-  position: relative;
+.rnd-options__section-header-toggle::after {
+    content: "";
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    display: block;
+    height: 20px;
+    width: 20px;
+    /* background-color: var(--rnd-section-bg-color);
+    border: 2px solid var(--rnd-color-light-blue);
+    border-radius: 50%; */
+    background: url('../images/roundist-32.png') no-repeat var(--rnd-second-bg-color);
+    background-size: contain;
+    border-radius: 50%;
+    transition: .3s;
 }
 
-.rnd-section {
-  display: none;
-  padding: 20px;
+.rnd-options__section-header-checkbox:checked + .rnd-options__section-header-label .rnd-options__section-header-toggle {
+    background-color: var(--rnd-color-light-blue);
 }
 
-.rnd-section_active {
-  display: block;
+.rnd-options__section-header-checkbox:checked + .rnd-options__section-header-label .rnd-options__section-header-toggle::after {
+    left: auto;
+    right: -1px;
 }
 
-.rnd-section__title {
-  color: var(--title-text-color);
-  font-size: 16px;
-  margin-bottom: 30px;
+.rnd-options__article {
+    margin-top: 10px;
+    background: #fff;
+    border: 1px solid var(--rnd-main-bg-color);
+    border-radius: 15px;
+    padding: 15px 20px;
+    font-size: 16px;
+    color: var(--rnd-second-text-color);
 }
 
-.rnd-section__option {
-  margin: 20px 0;
+.rnd-options__level {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
 }
 
-.rnd-section__option_disabled {
-  opacity: .2;
+.rnd-options__level .rnd-options__level {
+    margin-left: 25px;
 }
 
-.rnd-section__option_disabled .rnd-section__label::before, .rnd-section__option_disabled .rnd-section__label::after  {
-  cursor: auto;
+.rnd-options__section-checkbox {
+    position: absolute;
+    display: block;
+    top: 0;
+    width: 0;
+    height: 0;
+    opacity: 0;
 }
 
-.rnd-section__label {
-  position: relative;
-  width: max-content;
-  display: flex;
-  align-items: center;
+.rnd-options__section-label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
 }
 
-.rnd-section__label::after {
-  content: "";
-  display: inline-block;
-  margin-left: 10px;
-  width: 28px;
-  height: 14px;
-  border: 1px solid var(--main-text-color);
-  border-radius: 20px;
-  background: #fff;
-  cursor: pointer;
-}
-.rnd-section__label::before {
-  content: "";
-  display: inline-block;
-  position: absolute;
-  right: 14px;
-  width: 14px;
-  height: 14px;
-  border: 1px solid #1c84c555;
-  border-radius: 50%;
-  background: #fff;
-  cursor: pointer;
-  z-index: 1000;
-  transition: .2s;
+.rnd-options__section-toggle {
+    position: relative;
+    display: inline-block;
+    height: 16px;
+    width: 24px;
+    border: 1px solid var(--rnd-lighter-text-color);
+    border-radius: 8px;
+    background-color: #fff;
 }
 
-.rnd-section__checkbox:checked ~ .rnd-section__label::after {
-  background: var(--main-gradient);
-  background: var(--color-blue);
-  background: var(--main-text-color);
-}
-.rnd-section__checkbox:checked ~  .rnd-section__label::before {
-  right: 0;
+.rnd-options__section-toggle::after {
+    content: "";
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    display: block;
+    height: 16px;
+    width: 16px;
+    /* background-color: var(--rnd-section-bg-color);
+    border: 2px solid var(--rnd-color-light-blue);
+    border-radius: 50%; */
+    background: url('../images/roundist-32.png') no-repeat var(--rnd-second-bg-color);
+    background-size: contain;
+    border-radius: 50%;
+    transition: .3s;
 }
 
-.rnd-section__checkbox {
-  position: absolute;
-  top: 0;
-  left: 0;
-  opacity: 0;
+.rnd-options__section-checkbox:checked + .rnd-options__section-label .rnd-options__section-toggle {
+    background-color: var(--rnd-color-lighter-blue);
+}
+
+.rnd-options__section-checkbox:checked + .rnd-options__section-label .rnd-options__section-toggle::after {
+    left: auto;
+    right: -1px;
+}
+
+.rnd-options__section-checkbox:disabled + .rnd-options__section-label {
+    opacity: .3;
 }

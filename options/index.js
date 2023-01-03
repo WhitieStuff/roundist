@@ -1,193 +1,152 @@
-let options = defaults
+let options = rndDefaults
 
-chrome.storage.sync.get('options', (result) => {
-  if (result && result.options) loadOptions(result.options)
-  drawPage()
+chrome.storage.local.get('options', result => {
+    if (result && result.options) loadOptions(result.options, options)
+    drawPage()
 })
 
-function loadOptions(savedOptions) {
-  for (sectionKey in savedOptions) {
-    if (!options[sectionKey]) continue
+function loadOptions(savedOptions, defaultOptions) {
+    savedOptions.forEach(savedOption => {
+        defaultOptions.forEach(defaultOption => {
+            if (defaultOption.name != savedOption.name) return
+            defaultOption.value = savedOption.value
 
-    let savedSection = savedOptions[sectionKey]
-    let defaultSection = options[sectionKey]
-    defaultSection.value = savedSection.value
-    if (!savedSection.options.length) continue
-    
-    savedSection.options.forEach(savedOption => {
-      defaultSection.options.forEach(defaultOption => {
-        if (defaultOption.id == savedOption.id) defaultOption.value = savedOption.value
-      })
+            if (savedOption.subs.length)
+                loadOptions(savedOption.subs, defaultOption.subs)
+        })
     })
-  }
 }
 
 function drawPage() {
-  let main = document.querySelector('#main')
-  let nav = document.querySelector('#nav')
-  let navList = document.querySelector('#navList')
-  let sections = document.querySelector('#sections')
+    let main = document.querySelector('#main')
 
-  if (!options) return
-  for (sectionKey in options) {
-    let parent = options[sectionKey]
+    options.forEach((option, index) => {
+        let newMarker = `rnd-options_${index}`
 
-    let navItem = createNavItem(sectionKey)
-    navList.appendChild(navItem)
+        let section = document.createElement('section')
+        section.classList.add('rnd-options__section')
+        section.marker = newMarker
 
-    let section = createSection(sectionKey)
-    sections.appendChild(section)
-  }
+        let optionHeaderCheckbox = document.createElement('input')
+        optionHeaderCheckbox.type = 'checkbox'
+        optionHeaderCheckbox.checked = option.value
+        optionHeaderCheckbox.id = newMarker
+        optionHeaderCheckbox.name = newMarker
+        optionHeaderCheckbox.classList.add(
+            'rnd-options__section-header-checkbox'
+        )
+        optionHeaderCheckbox.addEventListener("change", event => handleHeaderCheckboxChange(event.target))
 
-  openTab('betHistory')
-}
+        let optionHeaderLabel = document.createElement('label')
+        optionHeaderLabel.innerHTML = option.title
+        optionHeaderLabel.setAttribute('for', newMarker)
+        optionHeaderLabel.classList.add('rnd-options__section-header-label')
 
-function openTab(sectionKey) {
-  let sections = document.querySelectorAll('.rnd-section')
-  for (let i = 0; i < sections.length; i++)
-    sections[i].classList.remove('rnd-section_active')
+        let optionHeaderToggle = document.createElement('div')
+        optionHeaderToggle.classList.add('rnd-options__section-header-toggle')
+        optionHeaderLabel.appendChild(optionHeaderToggle)
 
-  let section = document.querySelector(`#section-${sectionKey}`)
-  section.classList.add('rnd-section_active')
+        let optionArticle = document.createElement('article')
+        optionArticle.classList.add('rnd-options__article')
 
-  let navButtons = document.querySelectorAll('.rnd-nav__button')
-  for (let i = 0; i < navButtons.length; i++)
-    navButtons[i].classList.remove('rnd-nav__button_active')
+        if (option.subs && option.subs.length) {
+            createLevel(optionArticle, option.subs, newMarker)
+        }
 
-  let button = document.querySelector(`#nav-${sectionKey}`)
-  button.classList.add('rnd-nav__button_active')
-
-  updateChildren(sectionKey, sectionKey)
-  options[sectionKey].options.forEach((option) => {
-    updateChildren(option.id, sectionKey)
-  })
-}
-
-function createNavItem(sectionKey) {
-  let option = options[sectionKey]
-
-  let navItem = document.createElement('li')
-  navItem.classList.add('rnd-nav__item')
-  let navButton = document.createElement('button')
-  navButton.classList.add('rnd-nav__button')
-  navButton.id = `nav-${sectionKey}`
-  navButton.innerHTML = option.title
-  navButton.sectionKey = sectionKey
-  navButton.addEventListener('click', (event) => {
-    openTab(event.target.sectionKey)
-  })
-  navItem.appendChild(navButton)
-
-  return navItem
-}
-
-function createSection(sectionKey) {
-  let parent = options[sectionKey]
-
-  let section = document.createElement('section')
-  section.classList.add('rnd-section')
-  section.id = `section-${sectionKey}`
-
-  let title = document.createElement('h2')
-  title.classList.add('rnd-section__title')
-  title.innerHTML = parent.title
-  section.appendChild(title)
-
-  let mainOption = createOption(parent, sectionKey)
-  section.appendChild(mainOption)
-
-  parent.options.forEach((option) => {
-    let newOption = createOption(option, sectionKey)
-    section.appendChild(newOption)
-  })
-
-  return section
-}
-
-function createOption(option, sectionKey) {
-  let newOption = document.createElement('div')
-  newOption.classList.add('rnd-section__option')
-  newOption.setAttribute('name', option.id)
-
-  let input = document.createElement('input')
-  input.classList.add('rnd-section__checkbox')
-  input.type = 'checkbox'
-  input.setAttribute('name', `toggle-${option.id}`)
-  input.id = `toggle-${option.id}`
-  input.baseKey = option.id
-  input.parent = option.parent
-  input.sectionKey = sectionKey
-  input.checked = option.value
-  newOption.appendChild(input)
-
-  let label = document.createElement('label')
-  label.classList.add('rnd-section__label')
-  label.setAttribute('for', `toggle-${option.id}`)
-  label.innerHTML = option.title
-  newOption.appendChild(label)
-
-  input.addEventListener('change', (event) => {
-    switchOption(event.target)
-  })
-
-  return newOption
-}
-
-function switchOption(checkbox) {
-  let section = options[checkbox.sectionKey]
-
-  if (checkbox.baseKey == checkbox.sectionKey) {
-    section.value = checkbox.checked
-  } else {
-    section.options.forEach((option, index) => {
-      if (option.id == checkbox.baseKey) option.value = checkbox.checked
+        section.appendChild(optionHeaderCheckbox)
+        section.appendChild(optionHeaderLabel)
+        section.appendChild(optionArticle)
+        main.appendChild(section)
     })
-  }
 
-  updateChildren(checkbox.baseKey, checkbox.sectionKey)
-  saveOptions()
+    checkOptionsState()
+
+    function createLevel(currentLevel, subs, marker) {
+        let newLevel = document.createElement('div')
+        newLevel.setting = currentLevel.setting
+        newLevel.marker = marker
+        newLevel.setAttribute('marker', marker)
+        newLevel.classList.add('rnd-options__level')
+        subs.forEach((sub, index) => {
+            let newMarker = `${marker}_${index}`
+
+            let checkbox = document.createElement('input')
+            checkbox.type = 'checkbox'
+            checkbox.checked = sub.value
+            checkbox.id = newMarker
+            checkbox.name = newMarker
+            checkbox.classList.add('rnd-options__section-checkbox')
+            checkbox.addEventListener("change", event => handleHeaderCheckboxChange(event.target))
+
+            let label = document.createElement('label')
+            label.setAttribute('for', newMarker)
+            label.classList.add('rnd-options__section-label')
+
+            let toggle = document.createElement('div')
+            toggle.classList.add('rnd-options__section-toggle')
+            label.appendChild(toggle)
+            label.innerHTML += sub.title
+
+            newLevel.appendChild(checkbox)
+            newLevel.appendChild(label)
+
+            if (sub.subs && sub.subs.length)
+                createLevel(newLevel, sub.subs, newMarker)
+        })
+
+        currentLevel.appendChild(newLevel)
+    }
+
+    function handleHeaderCheckboxChange (parent) {
+        let parentID = parent.id
+        let enabled = parent.checked
+        let children = document.querySelectorAll(`[id^=${parentID}_]`)
+        
+        if (children && children.length) changeChildrenState(children, enabled, parent)
+
+        updateOptions()
+    }
+
+    function changeChildrenState (children, parentEnabled, parent) {
+        children.forEach(child => {
+            child.removeAttribute('disabled')
+        })
+        children.forEach(child => {
+            let grandParentEnabled = document.getElementById(parent.parentNode.marker).checked
+            if (!parentEnabled || !grandParentEnabled) {
+                child.setAttribute('disabled', true)
+            }
+
+            let childID = child.id
+            let childEnabled = child.checked
+            let childChildren = document.querySelectorAll(`[id^=${childID}_]`)
+            if (childChildren && childChildren.length) changeChildrenState(childChildren, childEnabled, child)
+        })
+    }
+
+    function checkOptionsState() {
+        let parentOptions = document.querySelectorAll('section > input')
+        parentOptions.forEach(option => handleHeaderCheckboxChange(option))
+    }
 }
 
-function updateChildren(baseKey, sectionKey) {
-  let section = options[sectionKey]
-
-  section.options.forEach((option) => {
-    let optionKey = option.id
-    let parentKey = option.parent
-    if (parentKey != baseKey) return
-
-    let sectionCheckbox = document.querySelector(`#toggle-${sectionKey}`)
-    let sectionLocked = !sectionCheckbox.checked
-
-    let parentCheckbox = document.querySelector(`#toggle-${parentKey}`)
-    let parentLocked = parentCheckbox.disabled
-    let parentValue = parentCheckbox.checked
-
-
-    let isLocked = () => {
-      if (parentKey == sectionKey) return sectionLocked
-      if (parentLocked) return parentLocked
-      return !parentValue
-    }
-
-    let locked = isLocked()
-
-    let checkbox = document.querySelector(`#toggle-${optionKey}`)
-    checkbox.disabled = locked
-    if (locked) {
-      checkbox.parentElement.classList.add('rnd-section__option_disabled')
-    } else {
-      checkbox.parentElement.classList.remove('rnd-section__option_disabled')
-    }
-
-    updateChildren(optionKey, sectionKey)
-  })
+function updateOptions() {
+    let checkboxes = document.querySelectorAll('[id^=rnd-options_]')
+    checkboxes.forEach(checkbox => {
+        let id = checkbox.id
+        let levels = id.split('_')
+        if (levels.length == 2) options[levels[1]].value = checkbox.checked
+        if (levels.length == 3) options[levels[1]].subs[levels[2]].value = checkbox.checked
+        if (levels.length == 4) options[levels[1]].subs[levels[2]].subs[levels[3]].value = checkbox.checked
+        if (levels.length == 5) options[levels[1]].subs[levels[2]].subs[levels[3]].subs[levels[4]].value = checkbox.checked
+    })
+    saveOptions()
 }
 
 function saveOptions() {
-  chrome.storage.sync.set({ options: options }, function () {})
+    chrome.storage.local.set({ options: options }, function () {})
 }
 
 function resetOptions() {
-  chrome.storage.sync.set({ options: defaults }, function () {})
+    chrome.storage.local.set({ options: rndDefaults }, function () {})
 }

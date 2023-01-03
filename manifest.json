@@ -1,8 +1,8 @@
 {
-  "name": "Roundist Alpha",
-  "description": "Search rounds easily",
+  "name": "Roundist Beta",
+  "description": "Use Fundist at maximum power",
   "author": "Whitie",
-  "version": "0.4.1",
+  "version": "1.0.1",
   "manifest_version": 3,
   "icons": {
     "16": "/images/roundist-16.png",
