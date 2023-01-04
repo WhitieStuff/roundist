@@ -7,9 +7,11 @@
   --rnd-second-bg-color: #f7f8fb;
   --rnd-main-text-color: #7f7fa0;
   --rnd-lighter-text-color: #7f7fa099;
+  --rnd-logo-link-color: #a7b1c2;
   --rnd-second-text-color: #666;
   --rnd-light-text-color: #959595;
   --rnd-title-text-color: #2f2e4d;
+  --rnd-header-border-color: #999c9e;
   --rnd-link-text-color: var(--rnd-color-mint);
   --rnd-link-hover-text-color: var(--rnd-color-mint-light);
   --rnd-color-mint: #00b394;

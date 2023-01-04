@@ -13,8 +13,8 @@
   "content_scripts": [
     {
       "matches": ["https://*.fundist.org/*"],
-      "css": ["style.css"],
-      "js": ["./options/defaults.js", "index.js", "stalls.js"]
+      "css": ["root.css", "style.css"],
+      "js": ["./options/defaults.js", "rndLog.js", "datetimes.js", "stalls.js", "./classes/NodeShifter.js", "./classes/UserSearch.js", "./classes/UserPage.js", "index.js"]
     }
   ],
   "permissions": ["storage"],
