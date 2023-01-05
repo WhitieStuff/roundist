@@ -4,7 +4,14 @@ class UserPage {
   currentPath = window.location.pathname
   currentQuery = window.location.search
   currentLink = window.location.href
+  currentLang = 'en'
+  env = 'prod'
   userID = null
+  login = null
+  netID = null
+  stallID = null
+  apiID = null
+  apiKey = null
 
   constructor() {
     rndLog('UserPage will modify the user page')
@@ -13,7 +20,9 @@ class UserPage {
     if (notFound && options.userPage404)
       return this.handle404(notFound.parentNode)
 
-    // this.addCopyButtons() and this.addApiStallNet() will be called there.
+    this.currentLang = this.currentPath.split('/')[1]
+
+    // this.addCopyButtons() and this.addApiStallNet() and this.tryLastLogins() will be called there.
     this.trySystemInfo()
     if (options.userPageDeposits) this.tryDeposits()
   }
@@ -60,6 +69,7 @@ class UserPage {
       clearInterval(systemInfoInterval)
       if (options.userPageCopyButtons) this.addCopyButtons()
       if (options.userPageApiStallNet) this.addApiStallNet()
+      if (options.userPageLastLogins) this.tryLastLogins()
     }, 500)
   }
 
@@ -73,6 +83,7 @@ class UserPage {
     let loginElement = document.querySelector('[name=col-IDDd]')
     let login = loginElement ? loginElement.innerHTML.replace('/n', '') : ''
     if (login.includes('button')) login = login.split('<')[0].trim()
+    this.login = login
 
     let id = this.currentPath.split('/')[4]
     this.userID = id
@@ -87,7 +98,7 @@ class UserPage {
       ? this.createCopyButton('Tracker', `"${login}":${this.currentLink}`)
       : null
     let slackLink = options.userPageCopyButtonsSlack
-      ? this.createSlackLink(login)
+      ? this.createSlackLink(id)
       : null
 
     let navMiddle = document.createElement('div')
@@ -108,6 +119,10 @@ class UserPage {
     button.addEventListener('click', event => {
       event.stopImmediatePropagation()
       navigator.clipboard.writeText(copyValue)
+      event.target.classList.add('rnd-user-page__copy-button_pressed')
+      setInterval(()=>{
+        event.target.classList.remove('rnd-user-page__copy-button_pressed')
+      },300)
     })
 
     return button
@@ -129,9 +144,12 @@ class UserPage {
     if (!netLine || !stallLine || !extLine) return
 
     let netID = netLine.innerHTML.split(':')[1]
+    this.netID = netID
     let stallID = stallLine.innerHTML.split(':')[1]
+    this.stallID = stallID
     let apiID = ''
     let apiName = ''
+    let apiKey = ''
 
     let env = this.currentHost.includes('www')
       ? 'prod'
@@ -139,6 +157,7 @@ class UserPage {
       ? 'test'
       : 'other'
     if (env != 'prod' && env != 'test') return
+    this.env = env
 
     rndLog('UserPage will add links to Api/Stall/Net')
 
@@ -147,14 +166,17 @@ class UserPage {
     envStalls.forEach(stall => {
       if (stall.stall_id != stallID) return
       apiID = stall.api_id
+      this.apiID = apiID
       apiName = stall.api_name
+      apiKey = stall.api_key
+      this.apiKey = apiKey
     })
 
     if (!apiID) return rndLog('Api not found, please update stalls.js')
 
-    let netURL = `${this.currentProtocol}//${this.currentHost}/en/Nets/Info/${netID}`
-    let stallURL = `${this.currentProtocol}//${this.currentHost}/en/Stalls/Info/${stallID}`
-    let apiURL = `${this.currentProtocol}//${this.currentHost}/en/Api/Info/${apiID}`
+    let netURL = `${this.currentProtocol}//${this.currentHost}/${this.currentLang}/Nets/Info/${netID}`
+    let stallURL = `${this.currentProtocol}//${this.currentHost}/${this.currentLang}/Stalls/Info/${stallID}`
+    let apiURL = `${this.currentProtocol}//${this.currentHost}/${this.currentLang}/Api/Info/${apiID}`
 
     let apiText = `${apiName}/ID:${apiID}`
 
@@ -215,12 +237,12 @@ class UserPage {
       let dayStart = newDateTime ? getDateStart(newDateTime) : null
       if (!dayStart) return
 
-      let IDSearchUrl = ID && ID.innerHTML.length ? `${this.currentProtocol}//${this.currentHost}/en/Support/PaymentRequests/Find?PaySystem=0&DateTime=${encodeURI(dayStart)}&TZ=UTC&TimeDelta=p2880&IDUser=&Text=${ID.innerHTML}&Type=req_resp` : null
-      let extIDSearchUrl = externalTID && externalTID.innerHTML.length ? `${this.currentProtocol}//${this.currentHost}/en/Support/PaymentRequests/Find?PaySystem=0&DateTime=${encodeURI(dayStart)}&TZ=UTC&TimeDelta=p2880&IDUser=&Text=${externalTID.innerHTML}&Type=req_resp` : null
-      let userIDSearchUrl = this.userID ? `${this.currentProtocol}//${this.currentHost}/en/Support/PaymentRequests/Find?PaySystem=0&DateTime=${encodeURI(dayStart)}&TZ=UTC&TimeDelta=p2880&IDUser=&Text=${this.userID}&Type=req_resp` : null
+      let IDSearchUrl = ID && ID.innerHTML.length ? `${this.currentProtocol}//${this.currentHost}/${this.currentLang}/Support/PaymentRequests/Find?PaySystem=0&DateTime=${encodeURI(dayStart)}&TZ=UTC&TimeDelta=p2880&IDUser=&Text=${ID.innerHTML}&Type=req_resp` : null
+      let extIDSearchUrl = externalTID && externalTID.innerHTML.length ? `${this.currentProtocol}//${this.currentHost}/${this.currentLang}/Support/PaymentRequests/Find?PaySystem=0&DateTime=${encodeURI(dayStart)}&TZ=UTC&TimeDelta=p2880&IDUser=&Text=${externalTID.innerHTML}&Type=req_resp` : null
+      let userIDSearchUrl = this.userID ? `${this.currentProtocol}//${this.currentHost}/${this.currentLang}/Support/PaymentRequests/Find?PaySystem=0&DateTime=${encodeURI(dayStart)}&TZ=UTC&TimeDelta=p2880&IDUser=&Text=${this.userID}&Type=req_resp` : null
       if (options.userPageDepositsSearchID && IDSearchUrl) this.addDepositSearchLink(ID, IDSearchUrl)
       if (options.userPageDepositsSearchExtID && extIDSearchUrl) this.addDepositSearchLink(externalTID, extIDSearchUrl)
-      if (options.userPageDepositsSearchUserID && userIDSearchUrl) this.addDepositSearchLink(date, userIDSearchUrl)
+      if (options.userPageDepositsSearchUserID && userIDSearchUrl) this.addDepositSearchLink(date, userIDSearchUrl, 2)
     })
   }
 
@@ -230,11 +252,57 @@ class UserPage {
    * @param {string} url Search URL.
    * @param {boolean} type Alt icon if true.
    */
-  addDepositSearchLink(parent, url, plus = false) {
+  addDepositSearchLink(parent, url, type=1) {
     let link = document.createElement('a')
     link.href = url
     link.classList.add('rnd-user-page__search-link')
+    if (type==2) link.classList.add('rnd-user-page__search-link_user')
 
     parent.appendChild(link)
   }
+
+  tryLastLogins() {
+    let currentLastLogin = null
+    let lastLoginsInterval = setInterval(() => {
+      let lastLogins = document.querySelectorAll(
+        'tbody [name=col-LastLoginDate]'
+      )
+      if (!lastLogins || !lastLogins.length) return
+      if (currentLastLogin == lastLogins[0].innerHTML) return
+      currentLastLogin = lastLogins[0].innerHTML
+
+      this.modifyLastLogins(lastLogins)
+    }, 500)
+  }
+
+  modifyLastLogins(lastLogins) {    
+    rndLog('UserPage will add links to ApiRequests to LastLoginHistory')
+
+    let prefix = this.login.split('_')[0]
+    let pureLogin = this.login.replace(`${prefix}_`, '')
+
+    lastLogins.forEach(lastLogin => {
+      let datetime = lastLogin.innerHTML.split('<')[0]
+      let newDatetime = getModifiedTime(datetime, 1, 'm', 'plus', true)
+
+      let url = `${this.currentProtocol}//${this.currentHost}/${this.currentLang}/Api/RequestViewer#?net_id=${this.netID}&api_key=${this.apiKey}&datetime=${encodeURI(newDatetime)}&params=Login%3D${pureLogin}&page=1&interval=5m`
+      lastLogin.innerHTML = datetime
+      this.addLastLoginsLink(lastLogin, url)
+    })
+  }
+
+    /**
+   * Inserts search link to the given column.
+   * @param {Element} parent Column element. 
+   * @param {string} url Search URL.
+   * @param {boolean} type Alt icon if true.
+   */
+    addLastLoginsLink(parent, url, type=1) {
+      let link = document.createElement('a')
+      link.href = url
+      link.classList.add('rnd-user-page__search-link')
+      if (type==2) link.classList.add('rnd-user-page__search-link_user')
+  
+      parent.appendChild(link)
+    }
 }

@@ -12,6 +12,9 @@
   --rnd-light-text-color: #959595;
   --rnd-title-text-color: #2f2e4d;
   --rnd-header-border-color: #999c9e;
+  --rnd-header-border-color-darker: #727375;
+  --rnd-fundist-header: #e9ecf2;
+  --rnd-fundist-header-darker: #d1d5db;
   --rnd-link-text-color: var(--rnd-color-mint);
   --rnd-link-hover-text-color: var(--rnd-color-mint-light);
   --rnd-color-mint: #00b394;
