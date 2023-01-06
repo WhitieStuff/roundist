@@ -52,7 +52,12 @@
   background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsIAAA7CARUoSoAAAANZSURBVFhHrVdNS1VRFD3Hp0HSExODBg2iWaMII2goCf6BwEEjQ6wImlRIg6ZR4wo0U4kgKMsa9AuaNEipWWMhEhEaPKTCQbe19j5f93jzeS+ux3PvtT/Wuu9yLr5nzT7Rt7wwbQozYwt7yhhrbIFigXW8+UIPNcqxp3WpSc/XAv8B/gT8QUvUuwDmlzG8hKWjB2BO3sbwRVR2emjQFYW5EQ3InVBqID3lXcyp6PObjhnTWnnaizAYFmQwCHxBfqLanNt+TmaTXgUnQg+x9W62D8lDlK8i9usQB5LBhEstCKImPeWJ2V/UvoLLtM4iGnMauXpIB6/Wytx9NO7GIUaECu6XxCj0tF7xya9vX5mYxVDAwPzbVfRGUh2egamwJIIIFTwupT3lFebk0xgqwc/rrPIeFI5FQQQOZDwuuZr0lP/HnHyIkyVwRnqYcfu29828rlBYRTrgn8KQ9JIlFY/zgdtRzBxK+Hpn6tJJTAUMzr5fRRhRPdXCBTwrsk++tjMxeQ5JLRxZfLUFheGoYyovAD05A/rBcAYycyk2ATYTHcDHBNJLfZDzDJTNJW+AoJPlKaQWfTiDO5CbVyzuA6KTCKtWBun5qF54DBPz0GgAJ+jNq1SkFjzUN5wBXWLkVDNEc427wJ7UGZXLGUiXmt6BsrnjGXJzcj2EYUnG+Kc+RIfRGfG9C2Vz8h41jwWN9VHScVo5cnNeLO6Aa3hzaTaA6Ph9amm5BPSiueb6GPqGvHW2LnaZS15GNGculfQMuAbzJsjM1SyH8wizyRkI5pWL+0FuXqGT9CTi7R7DaK4D9ZGb6y0uw992b05u+5+/ZJqar21PTtT+bzj0+MMW9oeDeWF/g38k92bIL6A2kPDsMeQV6UXUhu4Fc/LD4OPQHEdtnHluzlwPIZdp7orNUDIXHj+Q93Azzge1n+4xlJFkuT4amJPMW3yTIY3FwvzC0Le4JINRxInHXtg7g4jfFtov9xhFxe/9AZlDvGPbi6/127sM6lBYIg09MuZJLeE6z4iq9r4jP5trubyzMTO6w5JtLyxvYOj4AZszft68NXYeZE/wDPBXKuCERQxgdHwvc3K+MnPyRyBdwW9E+GVk72FpU8257EW8IIKvVfDMfB382ubtsRcodIEx/wCmciWzEBBtKwAAAABJRU5ErkJggg==');
 }
 
-.col-UserID:hover .rnd-user-search__button, .col-UserID:focus .rnd-user-search__button, .col-Login:hover .rnd-user-search__button, .col-Login:focus .rnd-user-search__button {
+.col-UserID:hover .rnd-user-search__button,
+.col-UserID:focus .rnd-user-search__button,
+.col-Login:hover .rnd-user-search__button,
+.col-Login:focus .rnd-user-search__button,
+.rnd-api__key:hover .rnd-user-search__button,
+.rnd-api__key:focus .rnd-user-search__button {
   opacity: 1;
 }
 
@@ -88,7 +93,7 @@
 }
 
 .rnd-user-page__search-link::after {
-  content: "";
+  content: '';
   display: inline-block;
   width: 24px;
   height: 24px;
@@ -111,7 +116,34 @@
   background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAO9SURBVFhHtZZJbE1RHMbPMYXSeJEiohZCJCyaEBG10EYjQiPEFDFVBEFSQxAWNnYSLERQQdMQUzdqYSFEEFYkbAiJ2Ehjrk5areH6/c859757296hi34v753/9/2H77x73rvvadVPDLtZu1ApvUV7ep7yVLHydKdW+jXrHe2pms4NGz+70kzIvIGhN2tzFNfRsgwjhaF5yoONKDaEqFtZd3VsXH/VNGVApg0Mq68djcljykt6m/MqmjCre9RWd1StOyNqGga5NRmeupDRXGo17NTIuhulkklD6gY48/kYrM5o7ucGo52QbBoyXAG9vrc5ary509S8wtr6aVKVhNQNMKw0au4Mks19PtdOiUf6FfDUhKi5iL5RxKynucRjzIwEZNiA+Z47AxF8o6hZT3PhPLrNjASkH4HSr8zgfpoLJ34rXUnIcgUazMD+mBvoJqInjsQiw4dQcVfTH/plbuOTLdtWdlkhHqkb4N7ezrBNDO1KNYe7+CnRcTMgBelHALi3P2T4Wkb/TDQXxdPcstXSlu0rfouShkwbEHBvb8BsFgas6k/UnKfSjcT7WBdg/sN2pUM6Y1Fw+dp0hlZgOB6re+2b18q7U9zhijCdQ/tYPiPdxO/JP2vZtuKf5HM1tyvQy9Eb0e837Vr6TvS+0OcGCi5fLSJ1DuOVDNDuncqvXB3RgbYta5pcaQS5moZxLKepXeOuCn10eboebcf36spmUxhCrw1gnkN+RFsJ7ZEzdrwJfoX1NsP5nutBxDPQltO+gbVQepx5vl/p5/Cyb7uXdEAC9PEZ0McojDMXPga+h8IHqI1oH1DvwncmmAufDT8KiUCyATjzqQx/Q/ngoDlqbrgd6DSTQ3HcmeXro/wXfPLXvYs+oRhErgAFVZQNlLnw4dRvIgjQ8wgWh82I8s29zEFGcz/v6ishASRjwF+oESzyp3JIunkwzHCbY5FcDLcxodLt9Oa+7F/4V1hwBUhOoXiAzKWe0OT0KJ7FwgShI9ATB87czwk38SReDPIb8HQRJfnmATKXGuKRiAbhI/DveKYx0hQeJk+TY5FcDI8ztznRLcJH8NUWmjjfFB5mGt0gycXwNHPiNmGC0BXQz2jkP1yoSRIZzf18ujnfAqVfiiIINtC6dRU/MPpi0CSibTCrHRjSQtzWy4oa5JweNRdy9uOh8uD3IHQEpvkghfdMmd9gmtygYEiUyyOj+S3qjkjgw6hh5M7fklvxZhrkb9hMSgqTzK0Br0FOuKux5s3EL4gvEV//eLjM/GewUOo/D1lK0rvgp4UAAAAASUVORK5CYII=');
 }
 
-td:hover .rnd-user-page__search-link::after, td:focus .rnd-user-page__search-link::after {
+td:hover .rnd-user-page__search-link::after,
+td:focus .rnd-user-page__search-link::after,
+.rnd-api__key:hover .rnd-user-page__search-link::after,
+.rnd-api__key:focus .rnd-user-page__search-link::after {
   opacity: 1;
 }
-/* ===== USER PAGE ENDSS ===== */
+/* ===== USER PAGE ENDS ===== */
+
+/* ===== */
+
+/* ===== API PAGE BEGINS ===== */
+.rnd-api__key-title {
+  display: flex;
+  align-items: center;
+  height: 24px;
+}
+
+.rnd-api__key {
+  display: flex;
+  align-items: center;
+}
+
+.rnd-api__button {
+  bottom: unset;
+}
+
+.rnd-api__search-link::after {
+  bottom: -2px;
+}
+
+/* ===== API PAGE ENDS ===== */

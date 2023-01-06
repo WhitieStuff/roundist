@@ -2,7 +2,7 @@
   "name": "Roundist Beta",
   "description": "Use Fundist at maximum power",
   "author": "Whitie",
-  "version": "1.0.1",
+  "version": "1.0.4",
   "manifest_version": 3,
   "icons": {
     "16": "/images/roundist-16.png",
@@ -14,7 +14,20 @@
     {
       "matches": ["https://*.fundist.org/*"],
       "css": ["root.css", "style.css"],
-      "js": ["./options/defaults.js", "rndLog.js", "datetimes.js", "stalls.js", "./classes/NodeShifter.js", "./classes/UserSearch.js", "./classes/UserPage.js", "index.js"]
+      "js": [
+        "./options/defaults.js",
+        "rndLog.js",
+        "datetimes.js",
+        "stalls.js",
+        "merhantsFR.js",
+        "./classes/NodeShifter.js",
+        "./classes/UserSearch.js",
+        "./classes/UserPage.js",
+        "./classes/Network.js",
+        "./classes/Stall.js",
+        "./classes/Api.js",
+        "index.js"
+      ]
     }
   ],
   "permissions": ["storage"],

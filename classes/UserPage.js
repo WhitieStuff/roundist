@@ -4,7 +4,7 @@ class UserPage {
   currentPath = window.location.pathname
   currentQuery = window.location.search
   currentLink = window.location.href
-  currentLang = 'en'
+  currentLang = this.currentPath.split('/')[1]
   env = 'prod'
   userID = null
   login = null
@@ -20,9 +20,7 @@ class UserPage {
     if (notFound && options.userPage404)
       return this.handle404(notFound.parentNode)
 
-    this.currentLang = this.currentPath.split('/')[1]
-
-    // this.addCopyButtons() and this.addApiStallNet() and this.tryLastLogins() will be called there.
+    // this.addCopyButtons(), this.addApiStallNet(), this.tryLastLogins(), this.tryFreerounds() will be called there.
     this.trySystemInfo()
     if (options.userPageDeposits) this.tryDeposits()
   }
@@ -70,10 +68,11 @@ class UserPage {
       if (options.userPageCopyButtons) this.addCopyButtons()
       if (options.userPageApiStallNet) this.addApiStallNet()
       if (options.userPageLastLogins) this.tryLastLogins()
+      if (options.userPageFreerounds) this.tryFreerounds()
     }, 500)
   }
 
-  async addCopyButtons() {
+  addCopyButtons() {
     let parent = document.querySelector('.nav-buttons')
     let childRight = document.querySelector('.nav-buttons__right')
     if (!parent || !childRight) return
@@ -120,9 +119,9 @@ class UserPage {
       event.stopImmediatePropagation()
       navigator.clipboard.writeText(copyValue)
       event.target.classList.add('rnd-user-page__copy-button_pressed')
-      setInterval(()=>{
+      setInterval(() => {
         event.target.classList.remove('rnd-user-page__copy-button_pressed')
-      },300)
+      }, 300)
     })
 
     return button
@@ -201,9 +200,7 @@ class UserPage {
 
   tryDeposits() {
     let depositsInterval = setInterval(() => {
-      let lastDeposit = document.querySelector(
-        '#lastDepositsAllTable'
-      )
+      let lastDeposit = document.querySelector('#lastDepositsAllTable')
       if (!lastDeposit) return
 
       clearInterval(depositsInterval)
@@ -223,40 +220,70 @@ class UserPage {
     rows.forEach(row => {
       let date = row.querySelector('[name=col-Date], [name=col_Date]')
       let ID = row.querySelector('[name=col-ID], [name=col_ID]')
-      let externalTID = row.querySelector('[name=col-ExternalTID], [name=col_ExternalTID]')
+      let externalTID = row.querySelector(
+        '[name=col-ExternalTID], [name=col_ExternalTID]'
+      )
       let note = row.querySelector('[name=col-Note], [name=col_Note]')
-      note.style.maxWidth='500px'
+      note.style.maxWidth = '500px'
 
       let rawDateTime = date ? date.innerHTML : null
       let newDateTime = rawDateTime ? normalizeDate(rawDateTime) : rawDateTime
 
-      if (options.userPageDepositsDates && newDateTime) date.innerHTML = newDateTime
+      if (options.userPageDepositsDates && newDateTime)
+        date.innerHTML = newDateTime
 
       if (!options.userPageDepositsSearch) return
 
       let dayStart = newDateTime ? getDateStart(newDateTime) : null
       if (!dayStart) return
 
-      let IDSearchUrl = ID && ID.innerHTML.length ? `${this.currentProtocol}//${this.currentHost}/${this.currentLang}/Support/PaymentRequests/Find?PaySystem=0&DateTime=${encodeURI(dayStart)}&TZ=UTC&TimeDelta=p2880&IDUser=&Text=${ID.innerHTML}&Type=req_resp` : null
-      let extIDSearchUrl = externalTID && externalTID.innerHTML.length ? `${this.currentProtocol}//${this.currentHost}/${this.currentLang}/Support/PaymentRequests/Find?PaySystem=0&DateTime=${encodeURI(dayStart)}&TZ=UTC&TimeDelta=p2880&IDUser=&Text=${externalTID.innerHTML}&Type=req_resp` : null
-      let userIDSearchUrl = this.userID ? `${this.currentProtocol}//${this.currentHost}/${this.currentLang}/Support/PaymentRequests/Find?PaySystem=0&DateTime=${encodeURI(dayStart)}&TZ=UTC&TimeDelta=p2880&IDUser=&Text=${this.userID}&Type=req_resp` : null
-      if (options.userPageDepositsSearchID && IDSearchUrl) this.addDepositSearchLink(ID, IDSearchUrl)
-      if (options.userPageDepositsSearchExtID && extIDSearchUrl) this.addDepositSearchLink(externalTID, extIDSearchUrl)
-      if (options.userPageDepositsSearchUserID && userIDSearchUrl) this.addDepositSearchLink(date, userIDSearchUrl, 2)
+      let IDSearchUrl =
+        ID && ID.innerHTML.length
+          ? `${this.currentProtocol}//${this.currentHost}/${
+              this.currentLang
+            }/Support/PaymentRequests/Find?PaySystem=0&DateTime=${encodeURI(
+              dayStart
+            )}&TZ=UTC&TimeDelta=p2880&IDUser=&Text=${
+              ID.innerHTML
+            }&Type=req_resp`
+          : null
+      let extIDSearchUrl =
+        externalTID && externalTID.innerHTML.length
+          ? `${this.currentProtocol}//${this.currentHost}/${
+              this.currentLang
+            }/Support/PaymentRequests/Find?PaySystem=0&DateTime=${encodeURI(
+              dayStart
+            )}&TZ=UTC&TimeDelta=p2880&IDUser=&Text=${
+              externalTID.innerHTML
+            }&Type=req_resp`
+          : null
+      let userIDSearchUrl = this.userID
+        ? `${this.currentProtocol}//${this.currentHost}/${
+            this.currentLang
+          }/Support/PaymentRequests/Find?PaySystem=0&DateTime=${encodeURI(
+            dayStart
+          )}&TZ=UTC&TimeDelta=p2880&IDUser=&Text=${this.userID}&Type=req_resp`
+        : null
+      if (options.userPageDepositsSearchID && IDSearchUrl)
+        this.addDepositSearchLink(ID, IDSearchUrl)
+      if (options.userPageDepositsSearchExtID && extIDSearchUrl)
+        this.addDepositSearchLink(externalTID, extIDSearchUrl)
+      if (options.userPageDepositsSearchUserID && userIDSearchUrl)
+        this.addDepositSearchLink(date, userIDSearchUrl, 2)
     })
   }
 
   /**
    * Inserts search link to the given column.
-   * @param {Element} parent Column element. 
+   * @param {Element} parent Column element.
    * @param {string} url Search URL.
    * @param {boolean} type Alt icon if true.
    */
-  addDepositSearchLink(parent, url, type=1) {
+  addDepositSearchLink(parent, url, type = 1) {
     let link = document.createElement('a')
     link.href = url
     link.classList.add('rnd-user-page__search-link')
-    if (type==2) link.classList.add('rnd-user-page__search-link_user')
+    if (type == 2) link.classList.add('rnd-user-page__search-link_user')
 
     parent.appendChild(link)
   }
@@ -275,7 +302,7 @@ class UserPage {
     }, 500)
   }
 
-  modifyLastLogins(lastLogins) {    
+  modifyLastLogins(lastLogins) {
     rndLog('UserPage will add links to ApiRequests to LastLoginHistory')
 
     let prefix = this.login.split('_')[0]
@@ -285,24 +312,64 @@ class UserPage {
       let datetime = lastLogin.innerHTML.split('<')[0]
       let newDatetime = getModifiedTime(datetime, 1, 'm', 'plus', true)
 
-      let url = `${this.currentProtocol}//${this.currentHost}/${this.currentLang}/Api/RequestViewer#?net_id=${this.netID}&api_key=${this.apiKey}&datetime=${encodeURI(newDatetime)}&params=Login%3D${pureLogin}&page=1&interval=5m`
+      let url = `${this.currentProtocol}//${this.currentHost}/${
+        this.currentLang
+      }/Api/RequestViewer#?net_id=${this.netID}&api_key=${
+        this.apiKey
+      }&datetime=${encodeURI(
+        newDatetime
+      )}&params=Login%3D${pureLogin}&page=1&interval=5m`
       lastLogin.innerHTML = datetime
       this.addLastLoginsLink(lastLogin, url)
     })
   }
 
-    /**
+  /**
    * Inserts search link to the given column.
-   * @param {Element} parent Column element. 
+   * @param {Element} parent Column element.
    * @param {string} url Search URL.
    * @param {boolean} type Alt icon if true.
    */
-    addLastLoginsLink(parent, url, type=1) {
-      let link = document.createElement('a')
-      link.href = url
-      link.classList.add('rnd-user-page__search-link')
-      if (type==2) link.classList.add('rnd-user-page__search-link_user')
-  
-      parent.appendChild(link)
-    }
+  addLastLoginsLink(parent, url, type = 1) {
+    let link = document.createElement('a')
+    link.href = url
+    link.classList.add('rnd-user-page__search-link')
+    if (type == 2) link.classList.add('rnd-user-page__search-link_user')
+
+    parent.appendChild(link)
+  }
+
+  tryFreerounds() {
+    let freeroundInterval = setInterval(() => {
+      let freerounds = document.querySelectorAll(
+        '#FreeroundsContainer #DataList'
+      )
+      if (!freerounds) return
+      clearInterval(freeroundInterval)
+      this.modifyFreerounds(freerounds)
+    }, 500)
+  }
+
+  modifyFreerounds(parent) {
+    let freeroundsRows = document.querySelectorAll('#FreeroundsContainer tbody tr')
+    if (!freeroundsRows || !freeroundsRows.length) return
+    rndLog('UserPage will add links to MerchantRequests to Freerounds')
+    
+    freeroundsRows.forEach(freeroundsRow => {
+      let datetimeCol = freeroundsRow.querySelector('[name=col-AddDate]')
+      let merchantCol = freeroundsRow.querySelector('.merchant')
+      if (!datetimeCol || !merchantCol) return
+
+      let rawDateTime = datetimeCol.innerHTML
+      let newDatetime = getModifiedTime(rawDateTime, 1, 'm', 'minus', true)
+
+      let rawMerchant = merchantCol.innerHTML
+      let merchantID = merchantsFR[rawMerchant]
+      if (!merchantsFR || !merchantID) return
+
+      let url = `${this.currentProtocol}//${this.currentHost}/${this.currentLang}/Support/MerchantRequests/Find?reqSystemId=${merchantID}&reqDateTime=${encodeURI(newDatetime)}&reqTZ=UTC&reqTimeDelta=p10&reqLogin=${this.login}&reqTransactionID=&reqIn=reqres`
+
+      this.addLastLoginsLink(datetimeCol, url)
+    })
+  }
 }

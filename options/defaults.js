@@ -147,6 +147,49 @@ const rndDefaults = [
         title: 'List children APIs links',
         value: true,
         subs: []
+      },
+      {
+        name: 'networkCopyButtons',
+        title: 'Add copy buttons to header',
+        value: true,
+        subs: [
+          {
+            name: 'networkCopyButtonsID',
+            title: 'Copy ID',
+            value: true,
+            subs: []
+          },
+          {
+            name: 'networkCopyButtonsName',
+            title: 'Copy name',
+            value: true,
+            subs: []
+          },
+          {
+            name: 'networkCopyButtonsTracker',
+            title: 'Copy Tracker link',
+            value: true,
+            subs: []
+          },
+          {
+            name: 'networkCopyButtonsSlack',
+            title: 'Slack link',
+            value: true,
+            subs: []
+          }
+        ]
+      },
+      {
+        name: 'networkTurnover',
+        title: 'Add links to network turnover',
+        value: true,
+        subs: []
+      },
+      {
+        name: 'networkMerchants',
+        title: 'Add links to merchants turnovers',
+        value: true,
+        subs: []
       }
     ]
   },
@@ -166,6 +209,37 @@ const rndDefaults = [
         title: 'Add a link to the bound API',
         value: true,
         subs: []
+      },
+      {
+        name: 'stallCopyButtons',
+        title: 'Add copy buttons to header',
+        value: true,
+        subs: [
+          {
+            name: 'stallCopyButtonsID',
+            title: 'Copy ID',
+            value: true,
+            subs: []
+          },
+          {
+            name: 'stallCopyButtonsName',
+            title: 'Copy name',
+            value: true,
+            subs: []
+          },
+          {
+            name: 'stallCopyButtonsTracker',
+            title: 'Copy Tracker link',
+            value: true,
+            subs: []
+          },
+          {
+            name: 'stallCopyButtonsSlack',
+            title: 'Slack link',
+            value: true,
+            subs: []
+          }
+        ]
       }
     ]
   },
@@ -199,10 +273,47 @@ const rndDefaults = [
         subs: []
       },
       {
+        name: 'apiTurnover',
+        title: 'Add link to API turnover',
+        value: true,
+        subs: []
+      },
+      {
         name: 'apiMerchants',
         title: 'Add links to merchants turnovers',
         value: true,
         subs: []
+      },
+      {
+        name: 'apiCopyButtons',
+        title: 'Add copy buttons to header',
+        value: true,
+        subs: [
+          {
+            name: 'apiCopyButtonsID',
+            title: 'Copy ID',
+            value: true,
+            subs: []
+          },
+          {
+            name: 'apiCopyButtonsName',
+            title: 'Copy name',
+            value: true,
+            subs: []
+          },
+          {
+            name: 'apiCopyButtonsTracker',
+            title: 'Copy Tracker link',
+            value: true,
+            subs: []
+          },
+          {
+            name: 'apiCopyButtonsSlack',
+            title: 'Slack link',
+            value: true,
+            subs: []
+          }
+        ]
       }
     ]
   },

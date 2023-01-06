@@ -12,11 +12,9 @@ let currentParams = new URLSearchParams(currentQuery)
 
 // Check if there are saved options. Overrides defaults.
 chrome.storage.local.get('options', result => {
-  if (result && result.options) {
-    loadOptions(result.options)
-  } else {
-    loadOptions(rawOptions)
-  }
+  loadOptions(rawOptions)
+  if (result && result.options) loadOptions(result.options)
+
   drawPage()
 })
 
@@ -59,5 +57,13 @@ async function drawPage() {
     !currentPath.includes('Unconfirmed')
       ? new UserSearch()
       : null
-  let userPage = options.userPage && currentPath.includes('Users/Summary') ? new UserPage() : null
+  let userPage =
+    options.userPage && currentPath.includes('Users/Summary')
+      ? new UserPage()
+      : null
+  let network =
+    options.network && currentPath.includes('Nets/Info') ? new Network() : null
+  let stall =
+    options.stall && currentPath.includes('Stalls/Info') ? new Stall() : null
+  let api = options.api && currentPath.includes('Api/Info') ? new Api() : null
 }
