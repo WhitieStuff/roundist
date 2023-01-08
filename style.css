@@ -182,29 +182,35 @@ td:focus .rnd-user-page__search-link::after,
   padding-right: 83px !important;
 }
 
-.rnd-transaction-history__toggle {
+/* ===== TRANSACTION HISTORY ENDS ===== */
+
+/* ===== */
+
+/* ===== PAYMENT REQUESTS BEGINS ===== */
+
+.rnd-payment-requests__toggle {
   background: none;
   border: none;
   outline: none;
   padding: 0;
 }
 
-.rnd-transaction-history__toggle:hover, .rnd-transaction-history__toggle:focus {
+.rnd-payment-requests__toggle:hover,
+.rnd-payment-requests__toggle:focus {
   color: #999;
 }
 
-.rnd-transaction-history__toggle::before {
+.rnd-payment-requests__toggle::before {
   content: '► ';
 }
 
-.rnd-transaction-history__toggle_expanded {
-
+.rnd-payment-requests__toggle_expanded {
 }
-.rnd-transaction-history__toggle_expanded::before {
+.rnd-payment-requests__toggle_expanded::before {
   content: '▼ ';
 }
 
-.rnd-transaction-history__original {
+.rnd-payment-requests__original {
   background: #ffffff66;
   border: 1px solid var(--rnd-transaction-border-color);
   border-radius: 5px;
@@ -214,13 +220,111 @@ td:focus .rnd-user-page__search-link::after,
   overflow: hidden;
 }
 
-.rnd-transaction-history__original_expanded {
+.rnd-payment-requests__original_expanded {
   height: auto;
   opacity: 1;
 }
 
-.rnd-transaction-history__toggle_header {
+.rnd-payment-requests__toggle_header {
   display: block;
 }
 
-/* ===== TRANSACTION HISTORY ENDS ===== */
+.rnd-payment-requests__parsed-level {
+}
+.rnd-payment-requests__parsed-level .rnd-payment-requests__parsed-level {
+  margin-left: 30px;
+}
+
+.rnd-payment-requests__parsed-label {
+  display: inline-block;
+  color: #335270;
+  font-weight: bold;
+}
+
+.rnd-payment-requests__parsed-level
+  .rnd-payment-requests__parsed-level
+  .rnd-payment-requests__parsed-label {
+  color: #6a4688;
+}
+
+.rnd-payment-requests__parsed-level
+  .rnd-payment-requests__parsed-level
+  .rnd-payment-requests__parsed-level
+  .rnd-payment-requests__parsed-label {
+  color: #885546;
+}
+
+.rnd-payment-requests__parsed-level
+  .rnd-payment-requests__parsed-level
+  .rnd-payment-requests__parsed-level
+  .rnd-payment-requests__parsed-level
+  .rnd-payment-requests__parsed-label {
+  color: #335270;
+}
+
+.rnd-payment-requests__parsed-level
+  .rnd-payment-requests__parsed-level
+  .rnd-payment-requests__parsed-level
+  .rnd-payment-requests__parsed-level
+  .rnd-payment-requests__parsed-level
+  .rnd-payment-requests__parsed-label {
+  color: #6a4688;
+}
+
+.rnd-payment-requests__parsed-level
+  .rnd-payment-requests__parsed-level
+  .rnd-payment-requests__parsed-level
+  .rnd-payment-requests__parsed-level
+  .rnd-payment-requests__parsed-level
+  .rnd-payment-requests__parsed-level
+  .rnd-payment-requests__parsed-label {
+  color: #885546;
+}
+
+.rnd-payment-requests__parsed-level
+  .rnd-payment-requests__parsed-level
+  .rnd-payment-requests__parsed-level
+  .rnd-payment-requests__parsed-level
+  .rnd-payment-requests__parsed-level
+  .rnd-payment-requests__parsed-level
+  .rnd-payment-requests__parsed-level
+  .rnd-payment-requests__parsed-label {
+  color: #335270;
+}
+
+.rnd-payment-requests__parsed-level
+  .rnd-payment-requests__parsed-level
+  .rnd-payment-requests__parsed-level
+  .rnd-payment-requests__parsed-level
+  .rnd-payment-requests__parsed-level
+  .rnd-payment-requests__parsed-level
+  .rnd-payment-requests__parsed-level
+  .rnd-payment-requests__parsed-level
+  .rnd-payment-requests__parsed-label {
+  color: #6a4688;
+}
+
+.rnd-payment-requests__parsed-level
+  .rnd-payment-requests__parsed-level
+  .rnd-payment-requests__parsed-level
+  .rnd-payment-requests__parsed-level
+  .rnd-payment-requests__parsed-level
+  .rnd-payment-requests__parsed-level
+  .rnd-payment-requests__parsed-level
+  .rnd-payment-requests__parsed-level
+  .rnd-payment-requests__parsed-level
+  .rnd-payment-requests__parsed-label {
+  color: #885546;
+}
+
+.rnd-payment-requests__parsed-colon {
+  display: inline-block;
+  margin-right: 5px;
+}
+
+.rnd-payment-requests__parsed-value {
+  display: inline-block;
+  word-break: break-all;
+}
+
+/* ===== PAYMENT REQUESTS ENDS ===== */

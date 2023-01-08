@@ -464,7 +464,7 @@ const rndDefaults = [
     subs: [
       {
         name: 'paymentRequestsParse',
-        title: 'Decode payment requests',
+        title: 'Decode payment requests (experimental)',
         value: true,
         subs: []
       },

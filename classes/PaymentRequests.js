@@ -9,6 +9,9 @@ class PaymentRequests {
     if (options.paymentRequestsDetectDelta) this.detectDelta()
     if (options.paymentRequestsReqRes) this.setReqRes()
     if (options.paymentRequestsDayStart) this.addDayStartButton()
+    // ToDo: HizliPapara and Maldopay Mkarekod DEP bad logs
+    // ToDo: Bad 0, pure JSON 85166305 [2]
+    // ToDo: Bad callback 85166333 [2]
     if (options.paymentRequestsParse) this.parseRows()
   }
 
@@ -165,69 +168,80 @@ class PaymentRequests {
   }
 
   parseRequest(parent, rawRequest, type, id) {
+    let newRequest = this.replaceBadParts(rawRequest)
+
+    let original = this.createOriginal(rawRequest, id, 'req')
+
+    let parsed = this.parseRequestBody(newRequest, type)
+    if (!parsed)
+      parsed = {
+        Roundist: "Couldn't parse data, refer to the original transaction."
+      }
+
+    let parsedBody = this.createParsedBody(parsed)
+
+    parent.innerHTML = ''
+    parent.appendChild(original)
+    parent.appendChild(parsedBody)
+  }
+
+  parseResponse(parent, rawResponse, type, id) {
+    let newResponse = this.replaceBadParts(rawResponse)
+
+    let original = this.createOriginal(rawResponse, id, 'res')
+
+    let parsed = this.parseResponseBody(newResponse, type)
+    if (!parsed)
+      parsed = {
+        Roundist: "Couldn't parse data, refer to the original transaction."
+      }
+
+    let parsedBody = this.createParsedBody(parsed)
+
+    parent.innerHTML = ''
+    parent.appendChild(original)
+    parent.appendChild(parsedBody)
+  }
+
+  replaceBadParts(rawRequest) {
     let newRequest = decodeURI(rawRequest)
     newRequest = newRequest.replace(/\\"/g, '"')
+    // For RBMPay callbacks bug.
     newRequest = newRequest.replace(/\{"\{"/g, '{"')
     newRequest = newRequest.replace(/\}":""\}/g, '}')
+    // For nested jsons.
     newRequest = newRequest.replace(/":"\{"/g, '":{"')
     newRequest = newRequest.replace(/\}"\}/g, '}}')
+    // For deeper nested jsons.
     newRequest = newRequest.replace(/\}\}"\}/g, '}}}')
-    newRequest = newRequest.replace(/\}\}"\}/g, '}}}')
+    // For URL params.
     newRequest = newRequest.replace(/&amp;/g, '&')
+    // For XML.
     newRequest = newRequest.replace(/&lt;/g, '<')
     newRequest = newRequest.replace(/&gt;/g, '>')
-    // Escaping quotes in XML
+    // Escaping quotes in XML like APCOPay callbacks.
     let xmlEscapes = newRequest.match(/<[^>]+"[^>]+>/g)
     if (xmlEscapes && xmlEscapes.length)
       xmlEscapes.forEach(part => {
         let newPart = part.replace(/"/g, `'`)
         newRequest = newRequest.replace(part, newPart)
       })
-    let original = this.createOriginal(rawRequest, id, 'req')
 
-    let parsed = this.parseRequestBody(newRequest, type)
-
-    parent.innerHTML = ''
-    parent.appendChild(original)
-  }
-
-  parseResponse(parent, rawResponse, type, id) {
-    let newResponse = decodeURI(rawResponse)
-    newResponse = newResponse.replace(/\\"/g, '"')
-    newResponse = newResponse.replace(/\{"\{"/g, '{"')
-    newResponse = newResponse.replace(/\}":""\}/g, '}')
-    newResponse = newResponse.replace(/":"\{"/g, '":{"')
-    newResponse = newResponse.replace(/\}"\}/g, '}}')
-    newResponse = newResponse.replace(/\}\}"\}/g, '}}}')
-    newResponse = newResponse.replace(/&amp;/g, '&')
-    newResponse = newResponse.replace(/&lt;/g, '<')
-    newResponse = newResponse.replace(/&gt;/g, '>')
-    // Escaping quotes in XML
-    let xmlEscapes = newResponse.match(/<[^>]+"[^>]+>/g)
-    if (xmlEscapes && xmlEscapes.length)
-      xmlEscapes.forEach(part => {
-        let newPart = part.replace(/"/g, `'`)
-        newResponse = newResponse.replace(part, newPart)
-      })
-
-    let original = this.createOriginal(rawResponse, id, 'res')
-
-    parent.innerHTML = ''
-    parent.appendChild(original)
+    return newRequest
   }
 
   createOriginal(rawRequest, id, type) {
     let wrapper = document.createElement('div')
 
     let original = document.createElement('div')
-    original.classList.add('rnd-transaction-history__original')
+    original.classList.add('rnd-payment-requests__original')
     original.classList.add('word-break')
     original.id = `rnd-orig-${id}-${type}`
     original.state = false
     original.innerHTML = rawRequest
 
     let toggle = document.createElement('button')
-    toggle.classList.add('rnd-transaction-history__toggle')
+    toggle.classList.add('rnd-payment-requests__toggle')
     toggle.innerHTML = 'Show original'
     toggle.for = `rnd-orig-${id}-${type}`
     toggle.addEventListener('click', event => {
@@ -254,23 +268,23 @@ class PaymentRequests {
   }
 
   expandOriginal(toggle, original) {
-    toggle.classList.add('rnd-transaction-history__toggle_expanded')
+    toggle.classList.add('rnd-payment-requests__toggle_expanded')
     toggle.innerHTML = 'Collapse original'
-    original.classList.add('rnd-transaction-history__original_expanded')
+    original.classList.add('rnd-payment-requests__original_expanded')
     original.state = true
   }
 
   collapseOriginal(toggle, original) {
-    toggle.classList.remove('rnd-transaction-history__toggle_expanded')
+    toggle.classList.remove('rnd-payment-requests__toggle_expanded')
     toggle.innerHTML = 'Show original'
-    original.classList.remove('rnd-transaction-history__original_expanded')
+    original.classList.remove('rnd-payment-requests__original_expanded')
     original.state = false
   }
 
   addHeaderToggler(parent, type) {
     let toggle = document.createElement('button')
-    toggle.classList.add('rnd-transaction-history__toggle')
-    toggle.classList.add('rnd-transaction-history__toggle_header')
+    toggle.classList.add('rnd-payment-requests__toggle')
+    toggle.classList.add('rnd-payment-requests__toggle_header')
     toggle.innerHTML = 'Show all originals'
     toggle.reqres = type
     toggle.state = false
@@ -289,8 +303,8 @@ class PaymentRequests {
     if (!cells || !cells.length) return
 
     cells.forEach(cell => {
-      let toggle = cell.querySelector('.rnd-transaction-history__toggle')
-      let original = cell.querySelector('.rnd-transaction-history__original')
+      let toggle = cell.querySelector('.rnd-payment-requests__toggle')
+      let original = cell.querySelector('.rnd-payment-requests__original')
 
       if (state) {
         this.collapseOriginal(toggle, original)
@@ -302,11 +316,11 @@ class PaymentRequests {
     if (state) {
       target.state = false
       target.innerHTML = 'Show all originals'
-      target.classList.remove('rnd-transaction-history__toggle_expanded')
+      target.classList.remove('rnd-payment-requests__toggle_expanded')
     } else {
       target.state = true
       target.innerHTML = 'Collapse all originals'
-      target.classList.add('rnd-transaction-history__toggle_expanded')
+      target.classList.add('rnd-payment-requests__toggle_expanded')
     }
   }
 
@@ -332,34 +346,238 @@ class PaymentRequests {
         : request.match(/\sGET\s/)
         ? 'GET'
         : 'other'
-      let temp = request.replace(/\sPOST\s/, '|').replace(/\sGET\s/, '|')
-      let parts = temp.split('|')
-      let url = parts[0]
-      let body = parts[1]
-      let bodyParsed = {}
 
-      parsed = {
-        URL: parts[0],
-        method: method
-      }
+      if (method == 'POST' || method == 'GET') {
+        let temp = request.replace(/\sPOST\s/, '|').replace(/\sGET\s/, '|')
+        let parts = temp.split('|')
+        let url = parts[0]
+        let body = parts[1]
+        let bodyParsed = {}
 
-      let isJSON = body.includes('{') && body.includes('}')
-      if (isJSON) {
-        try {
-          bodyParsed = JSON.parse(body)
-        } catch (e) {
-          bodyParsed = null
+        parsed = {
+          URL: parts[0],
+          method: method
         }
+
+        let isJSON = body.includes('{') && body.includes('}')
+        if (isJSON) {
+          try {
+            bodyParsed = JSON.parse(body)
+          } catch (e) {
+            bodyParsed = null
+          }
+        } else {
+          try {
+            let params = new URLSearchParams(body)
+            for (const [key, value] of params) bodyParsed[key] = value
+          } catch (e) {
+            bodyParsed = null
+          }
+        }
+        if (bodyParsed) parsed.request = bodyParsed
       } else {
-        try {
-          let params = new URLSearchParams(body)
-          for (const [key, value] of params) bodyParsed[key] = value
-        } catch (e) {
-          bodyParsed = null
+        let soap = request.match(/<.*SOAP/)
+
+        if (soap) {
+          let url = request.split('<')[0]
+          let body = request.replace(url, '')
+
+          url = url.replace(':', '')
+          let parsedBody = {}
+          try {
+            let parser = new DOMParser()
+            let res = parser.parseFromString(body, 'application/xml')
+
+            let children = res.children
+            for (let i = 0; i < children.length; i++) {
+              let element = children[i]
+              let key = element.tagName
+              let value = this.parseXMLLevel(element)
+
+              parsedBody[key] = value
+            }
+          } catch {
+            parsedBody = null
+          }
+
+          if (parsedBody) parsed = { url, request: parsedBody }
         }
       }
-      if (bodyParsed) parsed.request = bodyParsed
     }
     return parsed
+  }
+
+  parseXMLLevel(element) {
+    let result = {}
+    let attributes = element.getAttributeNames()
+
+    if (attributes.length)
+      attributes.forEach(attribute => {
+        if (element.getAttribute(attribute).trim().length)
+          result[attribute] = element.getAttribute(attribute)
+      })
+
+    let children = element.children
+    if (children.length) {
+      for (let i = 0; i < children.length; i++) {
+        let element = children[i]
+        let key = element.tagName
+        let value = this.parseXMLLevel(element)
+        result[key] = value
+      }
+    } else {
+      // If there are no other keys, returns 'Key: Value' instead of 'Key: {Key: Value}'
+      if (Object.keys(result).length) {
+        if (element.innerHTML.trim().length)
+          result[element.tagName] = element.innerHTML
+      } else {
+        result = element.innerHTML.trim() || '-'
+      }
+    }
+
+    return result
+  }
+
+  parseResponseBody(response, type) {
+    let parsed = null
+    if (type == 'init') {
+      try {
+        let parts = response.split('[')
+        let code = parts[0].replace(',', '')
+        let rawMessage = `[${parts[1]}`
+        let message = JSON.parse(rawMessage)
+
+        parsed = { code, message }
+      } catch (e) {
+        parsed = null
+      }
+    }
+    if (type == 'callback') {
+      try {
+        parsed = JSON.parse(response)
+      } catch (e) {
+        parsed = null
+      }
+      if (!parsed)
+        try {
+          let parts = response.split('{')
+          let status = parts[0]
+          let responseBody = response.replace(status, '')
+          status = status.replace(/:/g, '')
+
+          let message = JSON.parse(responseBody)
+
+          parsed = { status, message }
+        } catch (e) {
+          parsed = { response }
+        }
+    }
+    if (type == 'req') {
+      try {
+        let json = response.match(/{.*}/)
+
+        let parts = response.split('{')
+        let status = parts[0]
+        let responseBody = response.replace(status, '')
+
+        let parsedBody = JSON.parse(responseBody)
+
+        parsed = { status, response: parsedBody }
+      } catch (e) {
+        parsed = null
+      }
+      if (!parsed)
+        try {
+          let soap = response.match(/\?xml/)
+          if (soap) {
+            let message = response.split('<')[0]
+            let body = response.replace(message, '')
+
+            let parsedBody = {}
+            try {
+              let parser = new DOMParser()
+              let res = parser.parseFromString(body, 'application/xml')
+
+              let children = res.children
+              for (let i = 0; i < children.length; i++) {
+                let element = children[i]
+                let key = element.tagName
+                let value = this.parseXMLLevel(element)
+
+                parsedBody[key] = value
+              }
+            } catch {
+              parsedBody = null
+            }
+
+            if (parsedBody) parsed = { response: parsedBody }
+          }
+        } catch (e) {
+          parsed = null
+        }
+      if (!parsed) parsed = { response }
+    }
+    return parsed
+  }
+
+  createParsedBody(parsed) {
+    let wrapper = document.createElement('div')
+    wrapper.classList.add('rnd-payment-requests__parsed-wrapper')
+
+    let level = this.createParsedBodyLevel(parsed)
+
+    wrapper.appendChild(level)
+    return wrapper
+  }
+
+  createParsedBodyLevel(parsed) {
+    let level = document.createElement('div')
+    level.classList.add('rnd-payment-requests__parsed-level')
+
+    for (let key in parsed) {
+      let current = parsed[key]
+
+      let label = document.createElement('div')
+      label.classList.add('rnd-payment-requests__parsed-label')
+      label.innerHTML = key
+
+      if (
+        key == 'RemotePort' ||
+        key == 'RemoteUser' ||
+        key == 'HttpReferrer' ||
+        key == 'RAW_HTTP_REQUEST'
+      )
+        continue
+
+      let colon = document.createElement('div')
+      colon.classList.add('rnd-payment-requests__parsed-colon')
+      colon.innerHTML = ':'
+
+      let tempValue = document.createElement('div')
+      tempValue.classList.add('rnd-payment-requests__parsed-value')
+      current = current == '' || current == '[]' ? '---' : current
+      tempValue.innerHTML = current
+
+      let value =
+        typeof current === 'object'
+          ? this.createParsedBodyLevel(current)
+          : tempValue
+      // let value = tempValue
+
+      let line = document.createElement('div')
+      line.classList.add('rnd-payment-requests__parsed-line')
+
+      line.appendChild(label)
+      line.appendChild(colon)
+
+      level.appendChild(line)
+      if (typeof current !== 'object') {
+        line.appendChild(value)
+      } else {
+        level.appendChild(value)
+      }
+    }
+
+    return level
   }
 }
