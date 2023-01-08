@@ -229,8 +229,14 @@ td:focus .rnd-user-page__search-link::after,
   display: block;
 }
 
+.rnd-payment-requests__parsed-line {
+  display: flex;
+  flex-wrap: wrap;
+}
+
 .rnd-payment-requests__parsed-level {
 }
+
 .rnd-payment-requests__parsed-level .rnd-payment-requests__parsed-level {
   margin-left: 30px;
 }

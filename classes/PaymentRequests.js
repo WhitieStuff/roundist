@@ -9,9 +9,7 @@ class PaymentRequests {
     if (options.paymentRequestsDetectDelta) this.detectDelta()
     if (options.paymentRequestsReqRes) this.setReqRes()
     if (options.paymentRequestsDayStart) this.addDayStartButton()
-    // ToDo: HizliPapara and Maldopay Mkarekod DEP bad logs
-    // ToDo: Bad 0, pure JSON 85166305 [2]
-    // ToDo: Bad callback 85166333 [2]
+    // ToDo: Catch bad transactions and see what can be done.
     if (options.paymentRequestsParse) this.parseRows()
   }
 
@@ -139,7 +137,9 @@ class PaymentRequests {
       let colID = row.querySelector('[name=col-ID]')
       let type = colID.innerHTML.includes('Payment initialization')
         ? 'init'
-        : colID.innerHTML.includes('Requests')
+        : colID.innerHTML.includes('Requests') ||
+        colID.innerHTML.includes('HizliPapara') ||
+        colID.innerHTML.includes('Maldopay Mkarekod DEP')
         ? 'req'
         : colID.innerHTML.includes('Callbacks')
         ? 'callback'
@@ -204,7 +204,7 @@ class PaymentRequests {
   }
 
   replaceBadParts(rawRequest) {
-    let newRequest = decodeURI(rawRequest)
+    let newRequest = decodeURIComponent(rawRequest)
     newRequest = newRequest.replace(/\\"/g, '"')
     // For RBMPay callbacks bug.
     newRequest = newRequest.replace(/\{"\{"/g, '{"')
@@ -212,8 +212,14 @@ class PaymentRequests {
     // For nested jsons.
     newRequest = newRequest.replace(/":"\{"/g, '":{"')
     newRequest = newRequest.replace(/\}"\}/g, '}}')
+    newRequest = newRequest.replace(/\}",/g, '},')
     // For deeper nested jsons.
     newRequest = newRequest.replace(/\}\}"\}/g, '}}}')
+    newRequest = newRequest.replace(/\}\}\}"/g, '}}}')
+    // For Paycos escapes.
+    newRequest = newRequest.replace(/\\\\"/g, '"')
+    newRequest = newRequest.replace(/\\\\u003e/g, '')
+    newRequest = newRequest.replace(/"\{"/g, '{"')
     // For URL params.
     newRequest = newRequest.replace(/&amp;/g, '&')
     // For XML.
@@ -403,7 +409,15 @@ class PaymentRequests {
           if (parsedBody) parsed = { url, request: parsedBody }
         }
       }
+      if (!parsed)
+        try {
+          let bodyParsed = JSON.parse(request)
+          if (bodyParsed) parsed = bodyParsed
+        } catch (e) {
+          parsed = null
+        }
     }
+    if (!parsed) parsed = {'Roundist couldn\'t parse it, refer to the original transaction':request}
     return parsed
   }
 
@@ -517,6 +531,7 @@ class PaymentRequests {
         }
       if (!parsed) parsed = { response }
     }
+    if (!parsed) parsed = {'Roundist couldn\'t parse it, refer to the original transaction':response}
     return parsed
   }
 
@@ -544,8 +559,7 @@ class PaymentRequests {
       if (
         key == 'RemotePort' ||
         key == 'RemoteUser' ||
-        key == 'HttpReferrer' ||
-        key == 'RAW_HTTP_REQUEST'
+        key == 'HttpReferrer'
       )
         continue
 

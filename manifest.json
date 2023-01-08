@@ -2,7 +2,7 @@
   "name": "Roundist Beta",
   "description": "Use Fundist at maximum power",
   "author": "Whitie",
-  "version": "1.0.6s",
+  "version": "1.0.7",
   "manifest_version": 3,
   "icons": {
     "16": "/images/roundist-16.png",
