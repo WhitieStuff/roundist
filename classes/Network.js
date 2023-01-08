@@ -12,7 +12,7 @@ class Network {
   currentStalls = []
 
   constructor() {
-    rndLog('Network will modify the network page')
+    rndLog('Network.js will modify the network page')
 
     let env = this.currentHost.includes('www')
       ? 'prod'
@@ -47,7 +47,7 @@ class Network {
   }
 
   addLinks(type, list) {
-    rndLog(`Network will add ${type} list`)
+    rndLog(`Network.js will add ${type} list`)
 
     let nextChild = document.querySelector('dt[name=col-CountryDt]')
     let parent = nextChild.parentNode
@@ -80,7 +80,7 @@ class Network {
   }
 
   modifyMerchants() {
-    rndLog(`Network will add links to merchants turnovers`)
+    rndLog(`Network.js will add links to merchants turnovers`)
 
     let merchants = document.querySelectorAll('.provider_name')
     if (!merchants || !merchants.length) return
@@ -103,7 +103,7 @@ class Network {
   }
 
   addTurnoverLink() {
-    rndLog(`Network will add turnover link`)
+    rndLog(`Network.js will add turnover link`)
 
     let nextChild = document.querySelector('dt[name=col-CountryDt]')
     let parent = nextChild.parentNode
@@ -134,7 +134,7 @@ class Network {
     let childRight = document.querySelector('.nav-buttons__right')
     if (!parent || !childRight) return
 
-    rndLog('Network will add copy buttons to header')
+    rndLog('Network.js will add copy buttons to header')
 
     let IDButton = options.networkCopyButtonsID
       ? this.createCopyButton(this.networkID)

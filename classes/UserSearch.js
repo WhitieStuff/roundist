@@ -1,6 +1,6 @@
 class UserSearch {
   constructor () {
-    rndLog('UserSearch will add copy buttons')
+    rndLog('UserSearch.js will add copy buttons')
 
     if (options.userSearchCopyID) this.addIDCopyButtons()
     if (options.userSearchCopyLogin) this.addLoginCopyButtons()

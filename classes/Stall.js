@@ -14,7 +14,7 @@ class Stall {
   apiName = null
 
   constructor() {
-    rndLog('Stall will modify the stall page')
+    rndLog('Stall.js will modify the stall page')
 
     let env = this.currentHost.includes('www')
       ? 'prod'
@@ -50,7 +50,7 @@ class Stall {
     let childRight = document.querySelector('.nav-buttons__right')
     if (!parent || !childRight) return
 
-    rndLog('Stall will add copy buttons to header')
+    rndLog('Stall.js will add copy buttons to header')
 
     let IDButton = options.stallCopyButtonsID
       ? this.createCopyButton(this.stallID)
@@ -102,7 +102,7 @@ class Stall {
   }
 
   addApiLink() {
-    rndLog(`Stall will add API link`)
+    rndLog(`Stall.js will add API link`)
 
     let nextChild = document.querySelector('#StallMode').previousElementSibling
     let parent = nextChild.parentNode
@@ -132,7 +132,7 @@ class Stall {
     let networkCol = document.querySelector('#StallIDNet')
     if (!networkCol) return
 
-    rndLog('Stall will add Network link')
+    rndLog('Stall.js will add Network link')
 
     let link = document.createElement('a')
     link.innerHTML = `${this.networkName} (${this.networkID})`

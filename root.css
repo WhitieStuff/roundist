@@ -15,6 +15,7 @@
   --rnd-header-border-color-darker: #727375;
   --rnd-fundist-header: #e9ecf2;
   --rnd-fundist-header-darker: #d1d5db;
+  --rnd-transaction-border-color: #ddd;
   --rnd-link-text-color: var(--rnd-color-mint);
   --rnd-link-hover-text-color: var(--rnd-color-mint-light);
   --rnd-color-mint: #00b394;
@@ -27,11 +28,11 @@
   --rnd-main-gradient: linear-gradient(135deg, rgba(0,179,148,1) 0%, rgba(28,132,197,1) 100%);
 }
 
-* {
+/* * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   text-decoration: none;
   color: inherit;
   list-style: none;
-}
+} */

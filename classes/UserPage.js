@@ -14,7 +14,7 @@ class UserPage {
   apiKey = null
 
   constructor() {
-    rndLog('UserPage will modify the user page')
+    rndLog('UserPage.js will modify the user page')
 
     let notFound = document.querySelector('#responseCode')
     if (notFound && options.userPage404)
@@ -77,7 +77,7 @@ class UserPage {
     let childRight = document.querySelector('.nav-buttons__right')
     if (!parent || !childRight) return
 
-    rndLog('UserPage will add copy buttons to header')
+    rndLog('UserPage.js will add copy buttons to header')
 
     let loginElement = document.querySelector('[name=col-IDDd]')
     let login = loginElement ? loginElement.innerHTML.replace('/n', '') : ''
@@ -158,7 +158,7 @@ class UserPage {
     if (env != 'prod' && env != 'test') return
     this.env = env
 
-    rndLog('UserPage will add links to Api/Stall/Net')
+    rndLog('UserPage.js will add links to Api/Stall/Net')
 
     let envStalls = stalls[env]
 
@@ -212,7 +212,7 @@ class UserPage {
     let parent = document.querySelector('#LastDepositsContainer')
     if (!parent) return rndLog('Deposits not found')
 
-    rndLog('UserPage will modify deposits')
+    rndLog('UserPage.js will modify deposits')
 
     let rows = document.querySelectorAll('#LastDepositsContainer tbody tr')
     if (!rows) return
@@ -303,7 +303,7 @@ class UserPage {
   }
 
   modifyLastLogins(lastLogins) {
-    rndLog('UserPage will add links to ApiRequests to LastLoginHistory')
+    rndLog('UserPage.js will add links to ApiRequests to LastLoginHistory')
 
     let prefix = this.login.split('_')[0]
     let pureLogin = this.login.replace(`${prefix}_`, '')
@@ -353,7 +353,7 @@ class UserPage {
   modifyFreerounds(parent) {
     let freeroundsRows = document.querySelectorAll('#FreeroundsContainer tbody tr')
     if (!freeroundsRows || !freeroundsRows.length) return
-    rndLog('UserPage will add links to MerchantRequests to Freerounds')
+    rndLog('UserPage.js will add links to MerchantRequests to Freerounds')
     
     freeroundsRows.forEach(freeroundsRow => {
       let datetimeCol = freeroundsRow.querySelector('[name=col-AddDate]')

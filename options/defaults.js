@@ -429,7 +429,7 @@ const rndDefaults = [
         value: true,
         subs: [
           {
-            name: 'transactionHistorySearch10',
+            name: 'transactionHistorySearch20',
             title: '10 minutes',
             value: true,
             subs: []
@@ -463,7 +463,7 @@ const rndDefaults = [
     value: true,
     subs: [
       {
-        name: 'paymentRequestsDecode',
+        name: 'paymentRequestsParse',
         title: 'Decode payment requests',
         value: true,
         subs: []
@@ -477,6 +477,12 @@ const rndDefaults = [
       {
         name: 'paymentRequests1440',
         title: 'Add 1440m option',
+        value: true,
+        subs: []
+      },
+      {
+        name: 'paymentRequestsDetectDelta',
+        title: 'Use delta from current query',
         value: true,
         subs: []
       },
@@ -544,19 +550,6 @@ const rndDefaults = [
       {
         name: 'merchantRequestsParse',
         title: 'Parse requests if possible',
-        value: true,
-        subs: []
-      }
-    ]
-  },
-  {
-    name: 'tracker',
-    title: 'Tracker',
-    value: true,
-    subs: [
-      {
-        name: 'trackerLinks',
-        title: 'Add user links to Redmine context menu',
         value: true,
         subs: []
       }

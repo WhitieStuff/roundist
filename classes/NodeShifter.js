@@ -5,7 +5,7 @@ class NodeShifter {
   currentQuery = window.location.search
 
   constructor() {
-    rndLog('NodeShifter will add links to all nodes')
+    rndLog('NodeShifter.js will add links to all nodes')
 
     this.addBasicLinks()
     if (options.nodeShifterTestQA) this.addTestQALinks()
@@ -22,7 +22,7 @@ class NodeShifter {
   }
 
   addTestQALinks(links) {
-    rndLog('NodeShifter will add links to Test and QA')
+    rndLog('NodeShifter.js will add links to Test and QA')
     let testQALinks = [
       { title: 'Test', host: 'test.fundist.org' },
       { title: 'QA', host: 'qa.fundist.org' }

@@ -2,7 +2,7 @@
   "name": "Roundist Beta",
   "description": "Use Fundist at maximum power",
   "author": "Whitie",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "manifest_version": 3,
   "icons": {
     "16": "/images/roundist-16.png",
@@ -26,6 +26,9 @@
         "./classes/Network.js",
         "./classes/Stall.js",
         "./classes/Api.js",
+        "./classes/Merchants.js",
+        "./classes/TransactionHistory.js",
+        "./classes/PaymentRequests.js",
         "index.js"
       ]
     }

@@ -37,6 +37,9 @@ async function drawPage() {
   // Return if login page
   let loginForm = document.querySelector('#LoginForm')
   if (loginForm) return
+  // Return if page with games (dma212sdr and so on)
+  let merchantNav = document.querySelector('#MerchantNav')
+  if (merchantNav) return
 
   // A bit of stats
   let username = document.querySelector('#CurrentLogin')
@@ -66,4 +69,18 @@ async function drawPage() {
   let stall =
     options.stall && currentPath.includes('Stalls/Info') ? new Stall() : null
   let api = options.api && currentPath.includes('Api/Info') ? new Api() : null
+  let merchants =
+    options.merchants && currentPath.includes('Merchants/MerchantManager')
+      ? new Merchants()
+      : null
+  let transactionHistory =
+    options.transactionHistory &&
+    currentPath.includes('Payments/Pays/Credit') &&
+    currentQuery.includes('IDSystem')
+      ? new TransactionHistory()
+      : null
+  let paymentRequests =
+    options.paymentRequests && currentPath.includes('Support/PaymentRequests')
+      ? new PaymentRequests()
+      : null
 }

@@ -15,7 +15,7 @@ class Api {
   networkName = null
 
   constructor() {
-    rndLog('Api will modify the API page')
+    rndLog('Api.js will modify the API page')
 
     let env = this.currentHost.includes('www')
       ? 'prod'
@@ -60,7 +60,7 @@ class Api {
     let childRight = document.querySelector('.nav-buttons__right')
     if (!parent || !childRight) return
 
-    rndLog('Api will add copy buttons to header')
+    rndLog('Api.js will add copy buttons to header')
 
     let IDButton = options.apiCopyButtonsID
       ? this.createCopyButton(this.apiID)
@@ -118,7 +118,7 @@ class Api {
     let col = document.querySelector(`#ID${type}`)
     if (!col) return
 
-    rndLog(`Api will add ${type} link`)
+    rndLog(`Api.js will add ${type} link`)
 
     let ID = type == 'Stall' ? this.stallID : this.networkID
     let name = type == 'Stall' ? this.stallName : this.networkName
@@ -168,7 +168,7 @@ class Api {
   }
 
   addTurnoverLink() {
-    rndLog(`Api will add turnover link`)
+    rndLog(`Api.js will add turnover link`)
 
     let nextChild = document.querySelector('#Type').previousElementSibling
     let parent = nextChild.parentNode
@@ -195,7 +195,7 @@ class Api {
   }
 
   modifyMerchants() {
-    rndLog(`Api will add links to merchants turnovers`)
+    rndLog(`Api.js will add links to merchants turnovers`)
 
     let merchants = document.querySelectorAll('.provider_id')
     if (!merchants || !merchants.length) return
