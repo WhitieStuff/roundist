@@ -82,8 +82,9 @@ class TransactionHistory {
     link20.classList.add('rnd-user-page__search-link')
     link20.classList.add('rnd-api__search-link')
 
+    let dayStart = getDateStart(datetime)
     let link1440 = document.createElement('a')
-    link1440.href = `${this.currentProtocol}//${this.currentHost}/${this.currentLang}/Support/PaymentRequests/Find?PaySystem=0&DateTime=${encodeURI(datetime)}&TZ=UTC&TimeDelta=p1440&IDUser=${value}&Text=&Type=req_resp`
+    link1440.href = `${this.currentProtocol}//${this.currentHost}/${this.currentLang}/Support/PaymentRequests/Find?PaySystem=0&DateTime=${encodeURI(dayStart)}&TZ=UTC&TimeDelta=p1440&IDUser=${value}&Text=&Type=req_resp`
     link1440.classList.add('rnd-user-page__search-link')
     link1440.classList.add('rnd-user-page__search-link_plus')
     link1440.classList.add('rnd-api__search-link')

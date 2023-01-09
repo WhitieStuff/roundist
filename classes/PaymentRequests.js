@@ -11,6 +11,7 @@ class PaymentRequests {
     if (options.paymentRequestsDayStart) this.addDayStartButton()
     // ToDo: Catch bad transactions and see what can be done.
     if (options.paymentRequestsParse) this.parseRows()
+    if (options.paymentRequestsParse) this.highlight()
   }
 
   add1440() {
@@ -138,10 +139,13 @@ class PaymentRequests {
       let type = colID.innerHTML.includes('Payment initialization')
         ? 'init'
         : colID.innerHTML.includes('Requests') ||
-        colID.innerHTML.includes('HizliPapara') ||
-        colID.innerHTML.includes('Maldopay Mkarekod DEP')
+          colID.innerHTML.includes('HizliPapara') ||
+          colID.innerHTML.includes('Maldopay Mkarekod DEP')
         ? 'req'
-        : colID.innerHTML.includes('Callbacks')
+        : colID.innerHTML.includes('Callbacks') ||
+          (!colID.innerHTML.includes('Requests') &&
+            !colID.innerHTML.includes('Payment initialization') &&
+            colID.innerHTML.includes('0'))
         ? 'callback'
         : 'other'
 
@@ -168,6 +172,7 @@ class PaymentRequests {
   }
 
   parseRequest(parent, rawRequest, type, id) {
+    rawRequest = this.removeHighlights(rawRequest)
     let newRequest = this.replaceBadParts(rawRequest)
 
     let original = this.createOriginal(rawRequest, id, 'req')
@@ -186,6 +191,7 @@ class PaymentRequests {
   }
 
   parseResponse(parent, rawResponse, type, id) {
+    rawResponse = this.removeHighlights(rawResponse)
     let newResponse = this.replaceBadParts(rawResponse)
 
     let original = this.createOriginal(rawResponse, id, 'res')
@@ -203,15 +209,38 @@ class PaymentRequests {
     parent.appendChild(parsedBody)
   }
 
+  removeHighlights(rawRequest) {
+    let newRequest = rawRequest
+
+    let re1 = new RegExp('<span class="highlight">', 'g')
+    let re2 = new RegExp('</span>', 'g')
+    newRequest = newRequest.replace(re1, '')
+    newRequest = newRequest.replace(re2, '')
+
+    return newRequest
+  }
+
   replaceBadParts(rawRequest) {
     let newRequest = decodeURIComponent(rawRequest)
+
     newRequest = newRequest.replace(/\\"/g, '"')
     // For RBMPay callbacks bug.
     newRequest = newRequest.replace(/\{"\{"/g, '{"')
     newRequest = newRequest.replace(/\}":""\}/g, '}')
     // For nested jsons.
     newRequest = newRequest.replace(/":"\{"/g, '":{"')
-    newRequest = newRequest.replace(/\}"\}/g, '}}')
+    newRequest = newRequest.replace(/"\}"\}/g, '"}}')
+    newRequest = newRequest.replace(/null\}"\}/g, 'null}}')
+    newRequest = newRequest.replace(/0\}"\}/g, '0}}')
+    newRequest = newRequest.replace(/1\}"\}/g, '1}}')
+    newRequest = newRequest.replace(/2\}"\}/g, '2}}')
+    newRequest = newRequest.replace(/3\}"\}/g, '3}}')
+    newRequest = newRequest.replace(/4\}"\}/g, '4}}')
+    newRequest = newRequest.replace(/5\}"\}/g, '5}}')
+    newRequest = newRequest.replace(/6\}"\}/g, '6}}')
+    newRequest = newRequest.replace(/7\}"\}/g, '7}}')
+    newRequest = newRequest.replace(/8\}"\}/g, '8}}')
+    newRequest = newRequest.replace(/9\}"\}/g, '9}}')
     newRequest = newRequest.replace(/\}",/g, '},')
     // For deeper nested jsons.
     newRequest = newRequest.replace(/\}\}"\}/g, '}}}')
@@ -250,6 +279,7 @@ class PaymentRequests {
     toggle.classList.add('rnd-payment-requests__toggle')
     toggle.innerHTML = 'Show original'
     toggle.for = `rnd-orig-${id}-${type}`
+    toggle.setAttribute('for', `rnd-orig-${id}-${type}`)
     toggle.addEventListener('click', event => {
       this.handleToggleClick(event.target)
     })
@@ -417,7 +447,29 @@ class PaymentRequests {
           parsed = null
         }
     }
-    if (!parsed) parsed = {'Roundist couldn\'t parse it, refer to the original transaction':request}
+    if (!parsed && request.includes('Interac'))
+      // Это п*здец костыль, но че уж.
+      //Проблема в том, что я заранее заменяю все экранирования \" на ", чтобы спарсить json, но если среди URL-параметров есть json, парсинг ломается из-за кавычек.
+      try {
+        let tempRequest = request
+        let temp1 = tempRequest.match(/=\{.*\}/g)
+        if (temp1 && temp1.length)
+          temp1.forEach(temp => {
+            let newTemp = temp.replace(/"/g, "'").replace(/\}\}/g, '}"}')
+            tempRequest = tempRequest.replace(temp, newTemp)
+          })
+
+        let parsedRequest = this.parseRequestBody(tempRequest, type)
+
+        if (parsedRequest) parsed = parsedRequest
+      } catch (e) {
+        parsed = null
+      }
+    if (!parsed)
+      parsed = {
+        "Roundist couldn't parse it, refer to the original transaction": request
+      }
+
     return parsed
   }
 
@@ -464,6 +516,49 @@ class PaymentRequests {
         parsed = { code, message }
       } catch (e) {
         parsed = null
+        let tempResponse = response
+          .replace(`<span class='highlight'>`, '')
+          .replace(`</span>`, '')
+        if (tempResponse.includes('"markup')) {
+          try {
+            let code = 1
+            let message = tempResponse.includes('markup_redirect')
+              ? 'markup_redirect'
+              : response.includes('markup')
+              ? 'markup'
+              : 'unknown'
+            let tempScripts = response.match(/", "scripts":\[.*\]\}\]/)[0]
+            let scripts = tempScripts
+              .replace(/",\s*"scripts":/, '')
+              .replace(/\}\]/, '')
+
+            let rawHtml = tempResponse
+              .replace(tempScripts, '')
+              .replace(/1,\s*\["markup_redirect",\s*\{"html":"/, '')
+              .replace(/1,\s*\["markup",\s*\{"html":"/, '')
+
+            let html = {}
+            let parser = new DOMParser()
+            let res = parser.parseFromString(rawHtml, 'text/html')
+
+            let children = res.children
+            for (let i = 0; i < children.length; i++) {
+              let element = children[i]
+              let key = element.tagName
+              let value = this.parseXMLLevel(element)
+
+              html[key] = value
+            }
+            if (html && html.HTML && html.HTML.BODY) html = html.HTML.BODY
+
+            if (html) parsed = { code, message, html, scripts }
+          } catch (e) {
+            parsed = {
+              "Roundist can't parse markup redirects yet":
+                'refer to the original transaction.'
+            }
+          }
+        }
       }
     }
     if (type == 'callback') {
@@ -531,7 +626,11 @@ class PaymentRequests {
         }
       if (!parsed) parsed = { response }
     }
-    if (!parsed) parsed = {'Roundist couldn\'t parse it, refer to the original transaction':response}
+    if (!parsed)
+      parsed = {
+        "Roundist couldn't parse it, refer to the original transaction":
+          response
+      }
     return parsed
   }
 
@@ -556,11 +655,7 @@ class PaymentRequests {
       label.classList.add('rnd-payment-requests__parsed-label')
       label.innerHTML = key
 
-      if (
-        key == 'RemotePort' ||
-        key == 'RemoteUser' ||
-        key == 'HttpReferrer'
-      )
+      if (key == 'RemotePort' || key == 'RemoteUser' || key == 'HttpReferrer')
         continue
 
       let colon = document.createElement('div')
@@ -593,5 +688,30 @@ class PaymentRequests {
     }
 
     return level
+  }
+
+  highlight() {
+    let userID = this.currentParams.get('IDUser')
+    let text = this.currentParams.get('Text')
+    if (!userID && !text) return
+
+    let originals = document.querySelectorAll('.rnd-payment-requests__original')
+    let parsed = document.querySelectorAll('.rnd-payment-requests__parsed-wrapper')
+
+    originals.forEach(element => {
+      if (userID) this.highlightParam(element, userID)
+      if (text) this.highlightParam(element, text)
+    })
+    parsed.forEach(element => {
+      if (userID) this.highlightParam(element, userID)
+      if (text) this.highlightParam(element, text)
+    })
+  }
+
+  highlightParam(element, param) {
+    let rawData = element.innerHTML
+    var re = new RegExp(param, 'g')
+    let data = rawData.replace(re, `<span class="highlight">${param}</span>`)
+    element.innerHTML = data
   }
 }
